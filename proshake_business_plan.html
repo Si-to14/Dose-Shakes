@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Plan — Proshake Machine</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0a0a0a;
+  --white:#f5f3ee;
+  --gray1:#111;
+  --gray2:#1c1c1c;
+  --gray3:#2a2a2a;
+  --gray4:#3a3a3a;
+  --muted:#666;
+  --muted2:#999;
+  --accent:#c8f060;
+  --accent2:#a8d840;
+  --accent-dim:rgba(200,240,96,0.08);
+  --accent-dim2:rgba(200,240,96,0.15);
+  --red:#ff4d4d;
+  --blue:#60b4f0;
+  --amber:#f0c060;
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:'Syne',sans-serif;font-weight:400;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--black)}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(10,10,10,0.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(200,240,96,0.1);padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-brand{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:3px;color:var(--accent);text-transform:uppercase}
+.nav-tabs{display:flex;gap:4px}
+.nav-tab{background:none;border:none;color:var(--muted2);font-family:'Syne',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:8px 16px;cursor:pointer;border-radius:4px;transition:all .2s;position:relative}
+.nav-tab:hover{color:var(--white)}
+.nav-tab.active{color:var(--accent);background:var(--accent-dim)}
+.nav-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px}
+
+/* PAGES */
+.page{display:none;padding-top:56px;min-height:100vh}
+.page.active{display:block}
+
+/* ===== PAGE 1: RESUMEN EJECUTIVO ===== */
+#p1{background:var(--black)}
+.hero{min-height:calc(100vh - 56px);display:grid;grid-template-columns:1fr 1fr;gap:0;position:relative;overflow:hidden}
+.hero-left{padding:80px 48px 80px 64px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid rgba(255,255,255,0.05)}
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:4px;color:var(--accent);text-transform:uppercase;margin-bottom:32px;opacity:0;animation:fadeUp .6s .2s forwards}
+.hero-title{font-family:'Instrument Serif',serif;font-size:clamp(52px,5vw,80px);line-height:1.0;color:var(--white);margin-bottom:8px;opacity:0;animation:fadeUp .8s .4s forwards}
+.hero-title em{color:var(--accent);font-style:italic}
+.hero-sub{font-size:15px;color:var(--muted2);max-width:440px;line-height:1.8;margin-top:24px;opacity:0;animation:fadeUp .8s .6s forwards}
+.hero-cta{display:inline-flex;align-items:center;gap:10px;margin-top:40px;padding:12px 24px;border:1px solid var(--accent);color:var(--accent);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;background:none;border-radius:2px;transition:all .2s;opacity:0;animation:fadeUp .8s .8s forwards}
+.hero-cta:hover{background:var(--accent);color:var(--black)}
+.hero-right{padding:80px 64px 80px 48px;display:flex;flex-direction:column;justify-content:center;gap:24px;opacity:0;animation:fadeIn 1s .5s forwards}
+.kpi-card{background:var(--gray2);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:24px 28px;position:relative;overflow:hidden}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.kpi-card:hover::before{transform:scaleX(1)}
+.kpi-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.kpi-val{font-family:'Instrument Serif',serif;font-size:36px;color:var(--white);line-height:1}
+.kpi-val span{color:var(--accent)}
+.kpi-note{font-size:12px;color:var(--muted);margin-top:6px}
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* SECTION */
+.section{padding:80px 64px;border-top:1px solid rgba(255,255,255,0.05)}
+.section-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+.section-title{font-family:'Instrument Serif',serif;font-size:clamp(32px,3vw,48px);line-height:1.1;color:var(--white);margin-bottom:8px}
+.section-title em{color:var(--accent);font-style:italic}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:40px;align-items:start}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:40px}
+.four-col{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:40px}
+
+/* FEATURE BLOCKS */
+.feat{background:var(--gray2);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:24px;transition:border-color .2s}
+.feat:hover{border-color:rgba(200,240,96,0.3)}
+.feat-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);margin-bottom:12px}
+.feat-title{font-size:15px;font-weight:600;color:var(--white);margin-bottom:8px}
+.feat-text{font-size:13px;color:var(--muted2);line-height:1.7}
+
+/* PRODUCT SPECS */
+.spec-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:24px}
+.spec-item{display:flex;align-items:flex-start;gap:12px;padding:16px;background:var(--gray2);border-radius:6px;border:1px solid rgba(255,255,255,0.05)}
+.spec-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:5px}
+.spec-text{font-size:13px;color:var(--muted2);line-height:1.5}
+.spec-text strong{color:var(--white);font-weight:600}
+
+/* COSTS TABLE */
+.cost-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.cost-row:last-child{border-bottom:none}
+.cost-label{font-size:14px;color:var(--muted2)}
+.cost-val{font-family:'DM Mono',monospace;font-size:13px;color:var(--white)}
+.cost-val.accent{color:var(--accent)}
+.cost-val.red{color:var(--red)}
+.cost-block{background:var(--gray2);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:24px}
+.cost-block-title{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;font-family:'DM Mono',monospace}
+
+/* STRATEGY */
+.strategy-item{display:flex;gap:20px;padding:24px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.strategy-item:last-child{border-bottom:none}
+.strategy-num{font-family:'DM Mono',monospace;font-size:28px;color:var(--accent);opacity:.3;line-height:1;width:48px;flex-shrink:0}
+.strategy-content h4{font-size:15px;font-weight:600;color:var(--white);margin-bottom:6px}
+.strategy-content p{font-size:13px;color:var(--muted2);line-height:1.7}
+
+/* ===== PAGE: PLAN FINANCIERO ===== */
+#p5{background:var(--black)}
+.fin-hero{padding:64px 64px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.fin-title{font-family:'Instrument Serif',serif;font-size:clamp(40px,4vw,60px);color:var(--white);line-height:1}
+.fin-title em{color:var(--accent);font-style:italic}
+.fin-sub{font-size:14px;color:var(--muted2);margin-top:12px;margin-bottom:40px;max-width:600px}
+
+/* SCENARIO TOGGLE */
+.scenario-bar{display:flex;gap:8px;margin-bottom:32px}
+.scen-btn{background:var(--gray2);border:1px solid rgba(255,255,255,0.08);color:var(--muted2);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:8px 18px;border-radius:4px;cursor:pointer;transition:all .2s}
+.scen-btn:hover{border-color:rgba(200,240,96,0.3);color:var(--white)}
+.scen-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+
+/* ASSUMPTIONS PANEL */
+.assumptions{background:var(--gray2);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:28px;margin:0 64px 0}
+.assumptions-title{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--accent);margin-bottom:20px;text-transform:uppercase}
+.ass-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:20px}
+.ass-item{}
+.ass-label{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px;margin-bottom:4px}
+.ass-val{font-size:18px;font-weight:600;color:var(--white)}
+.ass-val.green{color:var(--accent)}
+.ass-val.red{color:var(--red)}
+
+/* MAIN FINANCIAL TABLE */
+.fin-table-wrap{padding:32px 64px;overflow-x:auto}
+.fin-table{width:100%;border-collapse:collapse;font-size:13px;min-width:860px}
+.fin-table th{padding:10px 14px;text-align:right;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid rgba(255,255,255,0.08)}
+.fin-table th:first-child{text-align:left}
+.fin-table td{padding:11px 14px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.04);font-family:'DM Mono',monospace;font-size:12px;color:var(--muted2);transition:background .15s}
+.fin-table td:first-child{text-align:left;font-family:'Syne',sans-serif;font-size:13px;color:var(--white);padding-left:0}
+.fin-table tr:hover td{background:rgba(255,255,255,0.02)}
+.fin-table .row-section td{font-weight:700;color:var(--muted);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding-top:24px;padding-bottom:6px;border-bottom:1px solid rgba(200,240,96,0.15)}
+.fin-table .row-total td{border-top:1px solid rgba(255,255,255,0.12);border-bottom:none;padding-top:14px;font-weight:700;color:var(--white)}
+.fin-table .row-highlight td{color:var(--accent) !important;font-weight:600}
+.fin-table .row-highlight td:first-child{color:var(--accent) !important}
+.fin-table .neg{color:var(--red) !important}
+.fin-table .pos{color:var(--accent) !important}
+.fin-table .gray{color:var(--muted) !important}
+
+/* CHART AREA */
+.chart-area{padding:0 64px 48px;display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.chart-card{background:var(--gray2);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:28px}
+.chart-title{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:24px}
+.bar-chart{display:flex;align-items:flex-end;gap:10px;height:160px;margin-bottom:8px}
+.bar-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1}
+.bar{width:100%;border-radius:3px 3px 0 0;transition:height .6s cubic-bezier(.4,0,.2,1);position:relative;min-height:4px}
+.bar-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px}
+.bar-val{font-family:'DM Mono',monospace;font-size:9px;position:absolute;top:-18px;left:50%;transform:translateX(-50%);white-space:nowrap;color:var(--accent)}
+
+/* SUMMARY CARDS */
+.summary-strip{padding:0 64px 64px;display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.sum-card{background:var(--gray2);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:20px;text-align:center}
+.sum-year{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:8px}
+.sum-val{font-family:'Instrument Serif',serif;font-size:28px;color:var(--white)}
+.sum-val.accent{color:var(--accent)}
+.sum-label{font-size:11px;color:var(--muted);margin-top:4px}
+
+/* MARGIN VIZ */
+.margin-row{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.margin-label{font-size:12px;color:var(--muted2);width:120px;flex-shrink:0}
+.margin-bar{flex:1;height:20px;background:var(--gray3);border-radius:3px;overflow:hidden;position:relative}
+.margin-fill{height:100%;border-radius:3px;display:flex;align-items:center;padding:0 8px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.margin-fill span{font-family:'DM Mono',monospace;font-size:10px;color:var(--black);font-weight:600;white-space:nowrap}
+.margin-pct{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted2);width:48px;text-align:right}
+
+/* ROI HIGHLIGHT */
+.roi-box{background:var(--accent-dim2);border:1px solid rgba(200,240,96,0.3);border-radius:8px;padding:32px;text-align:center;margin:0 64px 48px}
+.roi-box-title{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:16px}
+.roi-nums{display:flex;justify-content:center;gap:64px}
+.roi-num .val{font-family:'Instrument Serif',serif;font-size:48px;color:var(--accent);line-height:1}
+.roi-num .lbl{font-size:12px;color:var(--muted2);margin-top:4px}
+
+/* PAGE 2,3,4 content */
+.text-block{font-size:14px;color:var(--muted2);line-height:1.9;max-width:640px}
+.text-block strong{color:var(--white);font-weight:600}
+.inline-tag{display:inline-block;background:var(--accent-dim);border:1px solid rgba(200,240,96,0.2);color:var(--accent);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;padding:3px 10px;border-radius:3px;text-transform:uppercase;vertical-align:middle;margin:0 4px}
+
+.big-quote{font-family:'Instrument Serif',serif;font-size:clamp(22px,2.5vw,32px);font-style:italic;color:var(--white);line-height:1.4;border-left:3px solid var(--accent);padding-left:28px;margin:40px 0}
+
+.highlight-box{background:var(--accent-dim2);border:1px solid rgba(200,240,96,0.2);border-radius:8px;padding:24px;margin-top:24px}
+.highlight-box p{font-size:13px;color:var(--white);line-height:1.8}
+.highlight-box strong{color:var(--accent)}
+
+/* table simple */
+.simple-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:24px}
+.simple-table th{padding:10px 14px;text-align:left;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid rgba(255,255,255,0.1)}
+.simple-table td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--muted2);font-size:13px}
+.simple-table td strong{color:var(--white)}
+.simple-table tr:hover td{background:rgba(255,255,255,0.02)}
+.pill{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-family:'DM Mono',monospace}
+.pill-green{background:rgba(200,240,96,0.12);color:var(--accent)}
+.pill-amber{background:rgba(240,192,96,0.12);color:var(--amber)}
+.pill-blue{background:rgba(96,180,240,0.12);color:var(--blue)}
+.pill-red{background:rgba(255,77,77,0.12);color:var(--red)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .hero-right{display:none}
+  nav{padding:0 20px}
+  .section,.fin-hero,.fin-table-wrap,.chart-area,.summary-strip,.roi-box,.assumptions{padding-left:20px;padding-right:20px}
+  .hero-left{padding:48px 20px}
+  .two-col,.three-col,.four-col,.ass-grid{grid-template-columns:1fr}
+  .summary-strip{grid-template-columns:repeat(3,1fr)}
+  .nav-tab{padding:8px 10px;font-size:10px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Proshake — Business Plan 2025</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('p1',this)">Resumen</button>
+    <button class="nav-tab" onclick="showPage('p2',this)">Producto</button>
+    <button class="nav-tab" onclick="showPage('p3',this)">Mercado</button>
+    <button class="nav-tab" onclick="showPage('p4',this)">Estrategia</button>
+    <button class="nav-tab" onclick="showPage('p5',this)">Plan financiero</button>
+  </div>
+  <div class="nav-tag">v1.0 — Confidencial</div>
+</nav>
+
+<!-- ===== P1: RESUMEN EJECUTIVO ===== -->
+<div id="p1" class="page active">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Business Plan — 2025–2030</div>
+      <div class="hero-title">Batidos de<br>proteína<br><em>automáticos</em></div>
+      <p class="hero-sub">Implementación de una máquina Proshake Machine en un gimnasio de 3.100 socios. Ingreso pasivo recurrente, margen bruto del 76%, amortización prevista en menos de 6 meses en escenario realista.</p>
+      <button class="hero-cta" onclick="showPage('p5',document.querySelectorAll('.nav-tab')[4])">Ver plan financiero →</button>
+    </div>
+    <div class="hero-right">
+      <div class="kpi-card">
+        <div class="kpi-label">Inversión inicial</div>
+        <div class="kpi-val"><span>8.464</span> €</div>
+        <div class="kpi-note">6.990 € + IVA 21% — compra directa</div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Socios</div>
+          <div class="kpi-val"><span>3.100</span></div>
+          <div class="kpi-note">Base de clientes potenciales</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Margen bruto</div>
+          <div class="kpi-val"><span>76</span>%</div>
+          <div class="kpi-note">A 2,95 € / batido con coste 0,70 €</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Penetración objetivo</div>
+          <div class="kpi-val"><span>23</span>%</div>
+          <div class="kpi-note">Basado en Gym 1 (comparable)</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Beneficio neto año 5</div>
+          <div class="kpi-val"><span>~22k</span> €</div>
+          <div class="kpi-note">Escenario realista acumulado</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Payback estimado</div>
+        <div class="kpi-val"><span>5–6</span> <span style="font-size:20px">meses</span></div>
+        <div class="kpi-note">Escenario realista (23% penetración, 15% comisión gym)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Oportunidad</div>
+    <div class="section-title">Un negocio <em>sin personal</em><br>en el momento exacto</div>
+    <div class="three-col">
+      <div class="feat">
+        <div class="feat-num">01</div>
+        <div class="feat-title">Alta recurrencia natural</div>
+        <div class="feat-text">El post-entrenamiento es el momento de mayor predisposición de compra de proteína. La máquina captura esa demanda sin que nadie tenga que atender al cliente.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-num">02</div>
+        <div class="feat-title">Margen excepcional</div>
+        <div class="feat-text">Con coste de producto de 0,70 € y PVP de 2,95 €, el margen bruto es del 76%. Comparable a las mejores máquinas expendedoras del mercado.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-num">03</div>
+        <div class="feat-title">Escalabilidad real</div>
+        <div class="feat-text">Con 3.100 socios, una sola máquina puede generar más de 2.000 €/mes. Los descuentos por volumen permiten añadir unidades con mejor precio unitario.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-num">04</div>
+        <div class="feat-title">Telemetría y control remoto</div>
+        <div class="feat-text">La máquina incluye sistema 4G para monitorizar ventas, stock y funcionamiento en tiempo real. No requiere presencia física para su gestión diaria.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-num">05</div>
+        <div class="feat-title">Sourcing libre</div>
+        <div class="feat-text">Sin obligación de comprar proteína a Proshake. Proveedores bulk (Whey 8–10 €/kg vs 16 €/kg de Proshake) pueden mejorar el margen hasta el 90%.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-num">06</div>
+        <div class="feat-title">Personalización de marca</div>
+        <div class="feat-text">La máquina puede personalizarse con los colores e imagen del gimnasio, reforzando la experiencia de marca y la percepción de valor del servicio.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== P2: PRODUCTO ===== -->
+<div id="p2" class="page">
+  <div class="section" style="padding-top:80px">
+    <div class="section-label">El producto</div>
+    <div class="section-title">Proshake <em>Machine</em></div>
+    <div class="two-col">
+      <div>
+        <p class="text-block">La Proshake Machine es una máquina expendedora automatizada de batidos de proteínas funcionales. Preparada en <strong>60 segundos</strong>, sin personal adicional, con pantalla táctil de 15,6", <strong>7 torvas para multiproducto</strong> y sistema de telemetría 4G para control remoto de ventas y stock.</p>
+        <div class="big-quote">"Nutrición de precisión al instante, en el punto de mayor conversión: el post-entrenamiento."</div>
+        <div class="spec-grid">
+          <div class="spec-item"><div class="spec-dot"></div><div class="spec-text"><strong>Dimensiones:</strong> 760 × 740 × 1810 mm</div></div>
+          <div class="spec-item"><div class="spec-dot"></div><div class="spec-text"><strong>Pantalla:</strong> táctil digital 15,6"</div></div>
+          <div class="spec-item"><div class="spec-dot"></div><div class="spec-text"><strong>Torvas:</strong> 7 slots multiproducto</div></div>
+          <div class="spec-item"><div class="spec-dot"></div><div class="spec-text"><strong>Conexión:</strong> 230V + 4G telemetría</div></div>
+          <div class="spec-item"><div class="spec-dot"></div><div class="spec-text"><strong>Agua:</strong> depósito interno o toma 1/2"</div></div>
+          <div class="spec-item"><div class="spec-dot"></div><div class="spec-text"><strong>Vasos:</strong> dispensador automático</div></div>
+          <div class="spec-item"><div class="spec-dot"></div><div class="spec-text"><strong>Limpieza:</strong> mantenimiento diario automático</div></div>
+          <div class="spec-item"><div class="spec-dot"></div><div class="spec-text"><strong>Pago:</strong> tarjeta, QR, membresía del gym</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="cost-block">
+          <div class="cost-block-title">Estructura de costes del producto</div>
+          <div class="cost-row"><span class="cost-label">PVP recomendado / batido</span><span class="cost-val accent">2,95 €</span></div>
+          <div class="cost-row"><span class="cost-label">Coste materia prima (Proshake)</span><span class="cost-val red">0,70 €</span></div>
+          <div class="cost-row"><span class="cost-label">Coste mp optimizado (bulk)</span><span class="cost-val red">~0,35 €</span></div>
+          <div class="cost-row" style="border-top:1px solid rgba(200,240,96,0.2);padding-top:14px"><span class="cost-label" style="color:var(--white)">Margen bruto (con Proshake)</span><span class="cost-val accent">2,25 € / 76%</span></div>
+          <div class="cost-row"><span class="cost-label" style="color:var(--white)">Margen bruto (con bulk)</span><span class="cost-val accent">2,60 € / 88%</span></div>
+        </div>
+        <div class="cost-block" style="margin-top:20px">
+          <div class="cost-block-title">Opciones de adquisición</div>
+          <div class="cost-row"><span class="cost-label">Compra directa (1 ud.)</span><span class="cost-val">6.990 € + IVA</span></div>
+          <div class="cost-row"><span class="cost-label">Compra 3–5 unidades</span><span class="cost-val">6.500 € + IVA</span></div>
+          <div class="cost-row"><span class="cost-label">Renting mensual</span><span class="cost-val red">299 € / mes + IVA</span></div>
+          <div class="cost-row"><span class="cost-label">Leasing estimado</span><span class="cost-val">~129 € / mes + IVA</span></div>
+        </div>
+        <div class="highlight-box" style="margin-top:20px">
+          <p><strong>Conclusión:</strong> La compra directa es la opción más rentable con la base de socios disponible. El renting supone 3.588 € en 12 meses sin ser propietario. Con amortización en ~5 meses en escenario realista, la compra gana con claridad.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Catálogo de productos</div>
+    <div class="section-title">7 slots, <em>máxima conversión</em></div>
+    <table class="simple-table">
+      <thead><tr><th>Producto</th><th>Coste Proshake</th><th>Coste bulk estimado</th><th>PVP sugerido</th><th>Margen bulk</th><th>Uso</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Whey proteína (sabores)</strong></td><td>0,48 €/batido</td><td>0,24–0,30 €</td><td>2,95 €</td><td class="pos">~90%</td><td><span class="pill pill-green">Principal</span></td></tr>
+        <tr><td><strong>Isolada Premium</strong></td><td>0,54 €/batido</td><td>0,30–0,38 €</td><td>3,50 €</td><td class="pos">~89%</td><td><span class="pill pill-blue">Premium</span></td></tr>
+        <tr><td><strong>Creatina</strong></td><td>0,15 €/dosis</td><td>0,08–0,12 €</td><td>1,50 €</td><td class="pos">~92%</td><td><span class="pill pill-amber">Complemento</span></td></tr>
+        <tr><td><strong>Preentreno</strong></td><td>0,25 €/dosis</td><td>0,12–0,18 €</td><td>2,50 €</td><td class="pos">~93%</td><td><span class="pill pill-amber">Complemento</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== P3: MERCADO ===== -->
+<div id="p3" class="page">
+  <div class="section" style="padding-top:80px">
+    <div class="section-label">Análisis de mercado</div>
+    <div class="section-title">Un <em>benchmark</em> sólido</div>
+    <div class="two-col">
+      <div>
+        <p class="text-block">Los tres casos de éxito aportados por Proshake muestran una correlación clara: <strong>a mayor tamaño de gimnasio, mayor volumen pero no necesariamente mayor penetración</strong>. El caso más pequeño (400 socios) logra un 50% de penetración, demostrando que la gestión activa es el mayor determinante del éxito.</p>
+        <table class="simple-table">
+          <thead><tr><th>Gimnasio</th><th>Socios</th><th>Ventas/mes</th><th>Penetración</th><th>€/socio</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Gym 1</strong></td><td>1.800</td><td>1.250 €</td><td>23,5%</td><td>0,69 €</td></tr>
+            <tr><td><strong>Gym 2</strong></td><td>800</td><td>650 €</td><td>27,5%</td><td>0,81 €</td></tr>
+            <tr><td><strong>Gym 3</strong></td><td>400</td><td>600 €</td><td>50,8%</td><td>1,50 €</td></tr>
+            <tr style="border-top:1px solid rgba(200,240,96,0.2)"><td><strong style="color:var(--accent)">Tu gimnasio</strong></td><td style="color:var(--accent)">3.100</td><td style="color:var(--accent)">2.100–4.500 €</td><td style="color:var(--accent)">23–50%</td><td style="color:var(--accent)">0,68–1,45 €</td></tr>
+          </tbody>
+        </table>
+        <div class="highlight-box">
+          <p>Con 3.100 socios estás <strong>70% por encima del mayor caso de éxito</strong> documentado. Incluso replicando la penetración más baja (23,5%), generas casi el doble de ventas que el Gym 1.</p>
+        </div>
+      </div>
+      <div>
+        <div class="cost-block">
+          <div class="cost-block-title">Análisis de sensibilidad — penetración</div>
+          <div class="cost-row"><span class="cost-label">10% penetración (310 socios)</span><span class="cost-val">914 € / mes</span></div>
+          <div class="cost-row"><span class="cost-label">15% penetración (465 socios)</span><span class="cost-val">1.372 € / mes</span></div>
+          <div class="cost-row" style="background:rgba(200,240,96,0.04)"><span class="cost-label"><strong>23% penetración (713 socios)</strong></span><span class="cost-val accent"><strong>2.103 € / mes</strong></span></div>
+          <div class="cost-row"><span class="cost-label">35% penetración (1.085 socios)</span><span class="cost-val">3.201 € / mes</span></div>
+          <div class="cost-row"><span class="cost-label">50% penetración (1.550 socios)</span><span class="cost-val">4.572 € / mes</span></div>
+        </div>
+        <div class="cost-block" style="margin-top:20px">
+          <div class="cost-block-title">Factores de éxito (según benchmark)</div>
+          <div class="strategy-item" style="padding:16px 0">
+            <div class="strategy-num" style="font-size:20px">01</div>
+            <div class="strategy-content"><h4>Ubicación de la máquina</h4><p class="feat-text">Zona de vestuarios o salida del área de pesas. Máximo tráfico post-entrenamiento.</p></div>
+          </div>
+          <div class="strategy-item" style="padding:16px 0">
+            <div class="strategy-num" style="font-size:20px">02</div>
+            <div class="strategy-content"><h4>Comunicación activa</h4><p class="feat-text">Redes sociales, señalética y mención en la bienvenida a nuevos socios.</p></div>
+          </div>
+          <div class="strategy-item" style="padding:16px 0;border-bottom:none">
+            <div class="strategy-num" style="font-size:20px">03</div>
+            <div class="strategy-content"><h4>Integración con membresía</h4><p class="feat-text">Pago por QR o vinculado a la cuota reduce fricción y sube conversión.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== P4: ESTRATEGIA ===== -->
+<div id="p4" class="page">
+  <div class="section" style="padding-top:80px">
+    <div class="section-label">Plan de implementación</div>
+    <div class="section-title">De la compra al<br><em>beneficio neto</em></div>
+    <div class="two-col">
+      <div>
+        <div class="strategy-item">
+          <div class="strategy-num">01</div>
+          <div class="strategy-content">
+            <h4>Mes 1 — Adquisición e instalación</h4>
+            <p>Compra directa a Proshake (6.990 € + IVA). Instalación incluida. Formación del equipo. Configuración del sistema de telemetría y pagos integrados con el software del gimnasio. Decisión sobre proveedor de proteína.</p>
+          </div>
+        </div>
+        <div class="strategy-item">
+          <div class="strategy-num">02</div>
+          <div class="strategy-content">
+            <h4>Mes 1–2 — Lanzamiento</h4>
+            <p>Comunicación a socios por email y redes sociales. Señalética en el gimnasio. Posición estratégica de la máquina (salida de sala de pesas). Periodo promocional de apertura: primer batido a precio reducido o prueba gratuita para nuevos usuarios.</p>
+          </div>
+        </div>
+        <div class="strategy-item">
+          <div class="strategy-num">03</div>
+          <div class="strategy-content">
+            <h4>Mes 3–6 — Optimización</h4>
+            <p>Análisis de datos de telemetría: sabores más vendidos, horas pico, stock óptimo. Ajuste del surtido de las 7 torvas según demanda real. Evaluación de cambio a proveedor bulk si los datos de margen lo justifican.</p>
+          </div>
+        </div>
+        <div class="strategy-item">
+          <div class="strategy-num">04</div>
+          <div class="strategy-content">
+            <h4>Mes 6+ — Amortización y escala</h4>
+            <p>Punto de equilibrio alcanzado. Evaluación de segunda máquina (precio a 6.500 € con 3–5 unidades). Exploración del modelo de publicidad en pantalla (fee mensual de marcas de suplementos).</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="cost-block">
+          <div class="cost-block-title">Modelo de comisión al gimnasio</div>
+          <p class="feat-text" style="margin-bottom:16px">Al ser una instalación en las instalaciones del gimnasio, es razonable ofrecer al centro una comisión sobre ventas. El rango negociado es del 10–20%.</p>
+          <div class="cost-row"><span class="cost-label">Comisión 10% — ventas 2.103 €/mes</span><span class="cost-val red">−210 €/mes</span></div>
+          <div class="cost-row"><span class="cost-label">Comisión 15% — ventas 2.103 €/mes</span><span class="cost-val red">−315 €/mes</span></div>
+          <div class="cost-row"><span class="cost-label">Comisión 20% — ventas 2.103 €/mes</span><span class="cost-val red">−421 €/mes</span></div>
+          <div class="highlight-box" style="margin-top:16px">
+            <p>Recomendación: <strong>negociar al 10%</strong> si el gimnasio es propio o hay relación estrecha. Al 15% si requiere un incentivo para promover activamente la máquina entre sus socios. El 20% se justifica solo si el gimnasio asume gestión de stock.</p>
+          </div>
+        </div>
+        <div class="cost-block" style="margin-top:20px">
+          <div class="cost-block-title">Costes operativos fijos mensuales</div>
+          <div class="cost-row"><span class="cost-label">TPV / Sistema de pagos</span><span class="cost-val red">15–20 €</span></div>
+          <div class="cost-row"><span class="cost-label">Fee mantenimiento Proshake (año 2+)</span><span class="cost-val red">~33 €</span></div>
+          <div class="cost-row"><span class="cost-label">Comisión gimnasio (15% sobre ventas)</span><span class="cost-val red">~315 €</span></div>
+          <div class="cost-row" style="border-top:1px solid rgba(200,240,96,0.2)"><span class="cost-label" style="color:var(--white)">Total costes fijos mensuales</span><span class="cost-val red">~363–368 €</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== P5: PLAN FINANCIERO ===== -->
+<div id="p5" class="page">
+  <div class="fin-hero">
+    <div class="fin-title">Plan financiero <em>5 años</em></div>
+    <div class="fin-sub">Proyección 2025–2029. Escenario basado en penetración creciente, comisión al gimnasio del 10–20% y costes reales del dosier Proshake.</div>
+
+    <div class="scenario-bar">
+      <button class="scen-btn active" onclick="setScenario('realista',this)">Realista (23%→35%)</button>
+      <button class="scen-btn" onclick="setScenario('conservador',this)">Conservador (15%→25%)</button>
+      <button class="scen-btn" onclick="setScenario('optimo',this)">Óptimo (30%→50%)</button>
+    </div>
+  </div>
+
+  <div style="padding:24px 64px 0">
+    <div class="assumptions">
+      <div class="assumptions-title">Hipótesis del escenario</div>
+      <div class="ass-grid">
+        <div class="ass-item"><div class="ass-label">Penetración Y1</div><div class="ass-val green" id="asc-pen1">23%</div></div>
+        <div class="ass-item"><div class="ass-label">Penetración Y5</div><div class="ass-val green" id="asc-pen5">35%</div></div>
+        <div class="ass-item"><div class="ass-label">Comisión gym</div><div class="ass-val" id="asc-com">15%</div></div>
+        <div class="ass-item"><div class="ass-label">PVP batido</div><div class="ass-val">2,95 €</div></div>
+        <div class="ass-item"><div class="ass-label">Coste producto</div><div class="ass-val red">0,70 €</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fin-table-wrap">
+    <table class="fin-table" id="finTable">
+      <thead>
+        <tr>
+          <th style="text-align:left">Concepto</th>
+          <th>Año 1</th><th>Año 2</th><th>Año 3</th><th>Año 4</th><th>Año 5</th>
+        </tr>
+      </thead>
+      <tbody id="finTableBody"></tbody>
+    </table>
+  </div>
+
+  <div class="chart-area">
+    <div class="chart-card">
+      <div class="chart-title">Ingresos vs Costes totales (€/año)</div>
+      <div class="bar-chart" id="barChart1"></div>
+      <div id="barLegend1" style="display:flex;gap:16px;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Beneficio neto acumulado (€)</div>
+      <div class="bar-chart" id="barChart2"></div>
+    </div>
+  </div>
+
+  <div id="roiBox" class="roi-box">
+    <div class="roi-box-title">Retorno de la inversión</div>
+    <div class="roi-nums">
+      <div class="roi-num"><div class="val" id="roi-payback">—</div><div class="lbl">Meses hasta payback</div></div>
+      <div class="roi-num"><div class="val" id="roi-ben5">—</div><div class="lbl">Beneficio neto año 5</div></div>
+      <div class="roi-num"><div class="val" id="roi-total">—</div><div class="lbl">Beneficio acumulado 5 años</div></div>
+    </div>
+  </div>
+
+  <div class="summary-strip" id="summaryStrip"></div>
+</div>
+
+<script>
+const SOCIOS = 3100;
+const PVP = 2.95;
+const COSTE_PROD = 0.70;
+const INVERSION = 8464; // 6990 + IVA 21%
+const TPV = 216; // 18€/mes * 12
+const FEE_TECH_Y1 = 0; // incluido en garantía año 1
+const FEE_TECH_Y2PLUS = 399;
+
+const SCENARIOS = {
+  realista:    { pen:[0.23,0.27,0.30,0.33,0.35], com:0.15, label:'Realista' },
+  conservador: { pen:[0.15,0.18,0.21,0.23,0.25], com:0.15, label:'Conservador' },
+  optimo:      { pen:[0.30,0.36,0.42,0.46,0.50], com:0.10, label:'Óptimo' }
+};
+
+let currentScenario = 'realista';
+
+function calcYear(pen, com, year) {
+  const batidos_mes = Math.round(SOCIOS * pen);
+  const batidos_anio = batidos_mes * 12;
+  const ingresos = +(batidos_anio * PVP).toFixed(0);
+  const coste_prod = +(batidos_anio * COSTE_PROD).toFixed(0);
+  const comision = +(ingresos * com).toFixed(0);
+  const tpv = TPV;
+  const fee_tech = year === 1 ? FEE_TECH_Y1 : FEE_TECH_Y2PLUS;
+  const total_costes = coste_prod + comision + tpv + fee_tech;
+  const margen_bruto = ingresos - coste_prod;
+  const beneficio_neto = ingresos - total_costes;
+  const margen_pct = +((margen_bruto / ingresos * 100).toFixed(1));
+  return { batidos_mes, batidos_anio, ingresos, coste_prod, comision, tpv, fee_tech, total_costes, margen_bruto, beneficio_neto, margen_pct };
+}
+
+function fmt(n, euro=true) {
+  const s = Math.abs(n).toLocaleString('es-ES');
+  const sign = n < 0 ? '−' : '';
+  return euro ? sign + s + ' €' : sign + s;
+}
+
+function renderTable(scenario) {
+  const sc = SCENARIOS[scenario];
+  const years = sc.pen.map((p, i) => calcYear(p, sc.com, i+1));
+  const body = document.getElementById('finTableBody');
+
+  // Update assumptions display
+  document.getElementById('asc-pen1').textContent = Math.round(sc.pen[0]*100) + '%';
+  document.getElementById('asc-pen5').textContent = Math.round(sc.pen[4]*100) + '%';
+  document.getElementById('asc-com').textContent = Math.round(sc.com*100) + '%';
+
+  const rows = [
+    { type:'section', label:'INGRESOS' },
+    { type:'row', label:'Batidos vendidos / año', vals: years.map(y=>fmt(y.batidos_anio,false)), cls:'gray' },
+    { type:'row', label:'Batidos vendidos / mes (media)', vals: years.map(y=>fmt(y.batidos_mes,false)), cls:'gray' },
+    { type:'row', label:'Penetración sobre socios', vals: sc.pen.map(p=>Math.round(p*100)+'%'), cls:'' },
+    { type:'total', label:'INGRESOS BRUTOS', vals: years.map(y=>fmt(y.ingresos)), cls:'pos' },
+    { type:'section', label:'COSTES VARIABLES' },
+    { type:'row', label:'Coste materia prima (0,70 € / batido)', vals: years.map(y=>'−'+fmt(y.coste_prod)), cls:'neg' },
+    { type:'row', label:'Comisión gimnasio ('+Math.round(sc.com*100)+'%)', vals: years.map(y=>'−'+fmt(y.comision)), cls:'neg' },
+    { type:'section', label:'COSTES FIJOS' },
+    { type:'row', label:'TPV / sistema de pagos', vals: years.map(y=>'−'+fmt(y.tpv)), cls:'neg' },
+    { type:'row', label:'Fee mantenimiento Proshake', vals: years.map((y,i)=>i===0?'Incluido':'−'+fmt(y.fee_tech)), cls:'neg' },
+    { type:'total', label:'TOTAL COSTES OPERATIVOS', vals: years.map(y=>'−'+fmt(y.total_costes)), cls:'neg' },
+    { type:'section', label:'RESULTADOS' },
+    { type:'row', label:'Margen bruto (ingresos − mp)', vals: years.map(y=>fmt(y.margen_bruto)), cls:'' },
+    { type:'row', label:'Margen bruto %', vals: years.map(y=>y.margen_pct+'%'), cls:'pos' },
+    { type:'highlight', label:'BENEFICIO NETO ANUAL', vals: years.map(y=>fmt(y.beneficio_neto)), cls:'pos' },
+    { type:'section', label:'AMORTIZACIÓN' },
+    { type:'row', label:'Inversión inicial (amort. año 1)', vals: ['−'+fmt(INVERSION),'—','—','—','—'], cls:'neg' },
+  ];
+
+  // Acumulado
+  let acc = -INVERSION;
+  const accVals = years.map(y => { acc += y.beneficio_neto; return fmt(acc); });
+  rows.push({ type:'highlight', label:'RESULTADO ACUMULADO (incl. inversión)', vals: accVals, cls:'pos' });
+
+  body.innerHTML = rows.map(r => {
+    if (r.type === 'section') {
+      return `<tr class="row-section"><td colspan="6">${r.label}</td></tr>`;
+    }
+    const cls = r.type === 'total' ? 'row-total' : r.type === 'highlight' ? 'row-highlight' : '';
+    const cellCls = r.cls || '';
+    return `<tr class="${cls}">
+      <td>${r.label}</td>
+      ${r.vals.map(v=>`<td class="${cellCls}">${v}</td>`).join('')}
+    </tr>`;
+  }).join('');
+
+  renderCharts(years);
+  renderSummary(years);
+  renderROI(years);
+}
+
+function renderCharts(years) {
+  const maxIng = Math.max(...years.map(y=>y.ingresos));
+  const c1 = document.getElementById('barChart1');
+  c1.innerHTML = years.map((y,i) => {
+    const h1 = Math.round((y.ingresos/maxIng)*140);
+    const h2 = Math.round((y.total_costes/maxIng)*140);
+    return `<div class="bar-wrap">
+      <div style="display:flex;gap:4px;align-items:flex-end;height:140px">
+        <div class="bar" style="background:var(--accent);opacity:.85;height:${h1}px;width:20px;border-radius:3px 3px 0 0;position:relative">
+          <span class="bar-val" style="font-size:9px">${Math.round(y.ingresos/1000)}k</span>
+        </div>
+        <div class="bar" style="background:var(--red);opacity:.6;height:${h2}px;width:20px;border-radius:3px 3px 0 0"></div>
+      </div>
+      <div class="bar-lbl">A${i+1}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('barLegend1').innerHTML = 
+    `<span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;background:var(--accent);opacity:.85;border-radius:2px;display:inline-block"></span>Ingresos</span>
+     <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;background:var(--red);opacity:.6;border-radius:2px;display:inline-block"></span>Costes totales</span>`;
+
+  // Acumulado
+  let acc = -INVERSION;
+  const accYears = years.map(y => { acc += y.beneficio_neto; return acc; });
+  const maxAcc = Math.max(...accYears.map(Math.abs), INVERSION);
+  const c2 = document.getElementById('barChart2');
+  c2.innerHTML = accYears.map((v,i) => {
+    const isNeg = v < 0;
+    const h = Math.round((Math.abs(v)/maxAcc)*130);
+    const color = isNeg ? 'var(--red)' : 'var(--accent)';
+    return `<div class="bar-wrap">
+      <div style="height:140px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end">
+        ${!isNeg ? `<div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:4px">${Math.round(v/1000)}k</div>` : ''}
+        <div style="height:${h}px;width:32px;background:${color};opacity:.85;border-radius:3px 3px 0 0;position:relative">
+        ${isNeg ? `<div style="position:absolute;bottom:-18px;font-family:'DM Mono',monospace;font-size:9px;color:var(--red)">${Math.round(v/1000)}k</div>` : ''}
+        </div>
+      </div>
+      <div class="bar-lbl">A${i+1}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderSummary(years) {
+  const strip = document.getElementById('summaryStrip');
+  strip.innerHTML = years.map((y,i) => `
+    <div class="sum-card">
+      <div class="sum-year">Año ${i+1}</div>
+      <div class="sum-val ${y.beneficio_neto > 0 ? 'accent' : ''}">${Math.round(y.beneficio_neto/1000*10)/10}k €</div>
+      <div class="sum-label">beneficio neto</div>
+      <div style="margin-top:8px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">${Math.round(y.ingresos/1000*10)/10}k € ventas</div>
+    </div>
+  `).join('');
+}
+
+function renderROI(years) {
+  // Payback
+  let acc = -INVERSION;
+  let paybackMonth = null;
+  const monthlyBen = years[0].beneficio_neto / 12;
+  for (let m = 1; m <= 60; m++) {
+    const yr = Math.floor((m-1)/12);
+    const mBen = (yr < years.length ? years[yr].beneficio_neto : years[4].beneficio_neto) / 12;
+    acc += mBen;
+    if (acc >= 0 && paybackMonth === null) paybackMonth = m;
+  }
+
+  let totalAcc = -INVERSION;
+  years.forEach(y => totalAcc += y.beneficio_neto);
+
+  document.getElementById('roi-payback').textContent = paybackMonth ? paybackMonth : '—';
+  document.getElementById('roi-ben5').textContent = Math.round(years[4].beneficio_neto/1000*10)/10 + 'k €';
+  document.getElementById('roi-total').textContent = Math.round(totalAcc/1000*10)/10 + 'k €';
+}
+
+function setScenario(sc, btn) {
+  document.querySelectorAll('.scen-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentScenario = sc;
+  renderTable(sc);
+}
+
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// Init
+renderTable('realista');
+</script>
+</body>
+</html>
