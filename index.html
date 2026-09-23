@@ -246,13 +246,13 @@ table{width:100%;border-collapse:collapse}
       <p class="muted">"Compra de stock" (proteína, vasos, agua) solo afecta a la caja: el coste de cada batido ya se calcula con la receta, así no se cuenta dos veces. "Gasto operativo" (reparación, marketing, gasolina…) sí resta del EBITDA de su mes.</p>
       <div class="form-row" style="margin:10px 0 14px">
         <label>Fecha<input type="date" id="exDate"></label>
-        <label>Tipo<select id="exKind"><option value="op">Gasto operativo</option><option value="stock">Compra de stock</option></select></label>
+        <label>Tipo<select id="exKind"><option value="stock">Compra de stock (proteína, agua, vasos)</option><option value="op">Gasto operativo (gasolina, reparación, marketing…)</option></select></label>
         <label>Categoría<input type="text" id="exCat" list="catList" placeholder="Marketing"></label>
         <label style="flex:1;min-width:160px">Descripción<input type="text" id="exDesc" placeholder="Flyers septiembre"></label>
         <label>Importe (€)<input type="number" id="exAmt" step="0.01" min="0"></label>
         <button class="btn red" id="addExpense">Guardar gasto</button>
       </div>
-      <datalist id="catList"><option>Materia prima</option><option>Vasos</option><option>Agua</option><option>Mantenimiento</option><option>Marketing</option><option>Transporte</option><option>Gestoría</option><option>Seguro</option></datalist>
+      <datalist id="catList"><option>Reposición (gasolina / desplazamiento)</option><option>Materia prima</option><option>Vasos</option><option>Agua</option><option>Mantenimiento</option><option>Marketing</option><option>Transporte</option><option>Gestoría</option><option>Seguro</option></datalist>
       <div class="tablewrap"><table class="data" id="expTable"></table></div>
     </div>
   </section>
@@ -271,6 +271,11 @@ table{width:100%;border-collapse:collapse}
       <p class="muted">Estos nombres vienen de la máquina y no coinciden con ningún producto del catálogo. Asígnalos para que se calcule su coste. Si es un producto nuevo, créalo en un clic.</p>
       <div class="tablewrap"><table class="data" id="mapTable"></table></div>
     </div>
+    <div class="card mt" id="backupCard" hidden>
+      <h2>Copia de seguridad</h2>
+      <p class="muted">En esta versión tus datos se guardan en este navegador. Descarga una copia de vez en cuando (por ejemplo, después de subir las ventas de cada mes). Con ella puedes recuperar todo o pasarlo a otro ordenador o al móvil.</p>
+      <div class="form-row"><button class="btn" id="backupDown">Descargar copia</button><label class="btn ghost" for="backupIn" style="cursor:pointer">Cargar copia</label><input type="file" id="backupIn" accept=".json" hidden></div>
+    </div>
     <div class="card mt">
       <h2>Meses cargados</h2>
       <div class="tablewrap"><table class="data" id="monthsTable"></table></div>
@@ -285,11 +290,14 @@ table{width:100%;border-collapse:collapse}
 (function(){
 "use strict";
 /* ---------------- state & storage ---------------- */
+// Valores de partida: se usan solo si todavía no hay nada guardado.
+const DEFAULTS = {"settings": {"iva": 10, "gym": 10, "waterPrice": 0.1911, "waterPerShake": 0.3, "cupCost": 0.06, "openingCash": 0}, "catalog": {"ingredients": [{"id": "manhattan", "name": "Manhattan ISO (Chocolate / Chocolate blanco)", "pack": "Granel 1,5 kg", "price": 27, "kg": 1.5}, {"id": "whey_caramel", "name": "Whey Protein Caramel Macchiato", "pack": "Bolsa 1 kg", "price": 16, "kg": 1}, {"id": "whey_reeses", "name": "Whey Protein Peanut Butter Reese's", "pack": "Bolsa 1 kg", "price": 16, "kg": 1}, {"id": "whey_cookie", "name": "Whey Protein Cookie", "pack": "Bolsa 1 kg", "price": 16, "kg": 1}, {"id": "neox400", "name": "Neox Pre Workout (400 g)", "pack": "400 g", "price": 10, "kg": 0.4}, {"id": "neox350", "name": "Neox Pre Workout (350 g)", "pack": "350 g", "price": 29.9, "kg": 0.35}, {"id": "creapure", "name": "Creapure (creatina)", "pack": "1,5 kg", "price": 45, "kg": 1.5}], "products": [{"id": "p1", "name": "Batido Whey Cookie", "ing1": "whey_cookie", "dose1": 25, "ing2": "", "dose2": null, "extraCost": null, "price": 2.7, "aliases": ["Batido Proteína Whey sabor Cookie 30gr"]}, {"id": "p2", "name": "Batido Whey Reese's (Peanut Butter)", "ing1": "whey_reeses", "dose1": 25, "ing2": "", "dose2": null, "extraCost": null, "price": 2.7, "aliases": ["Batido Proteína Whey sabor Reeses - Peanut Butter 30gr"]}, {"id": "p3", "name": "Batido Caramel Macchiato", "ing1": "whey_caramel", "dose1": 25, "ing2": "", "dose2": null, "extraCost": null, "price": 2.7, "aliases": ["Batido Proteína sabor Caramel Macchiato 30gr"]}, {"id": "p4", "name": "Batido ISO Chocolate blanco", "ing1": "manhattan", "dose1": 25, "ing2": "", "dose2": null, "extraCost": null, "price": 2.7, "aliases": ["Batido Proteína ISO sabor Chocolate Blanco", "ISO Chocolate Blanco"]}, {"id": "p5", "name": "Batido ISO Chocolate negro", "ing1": "manhattan", "dose1": 25, "ing2": "", "dose2": null, "extraCost": null, "price": 2.7, "aliases": ["Batido Proteína ISO sabor Chocolate Negro", "ISO chocolate Black"]}, {"id": "p6", "name": "Pre-entreno Frutos rojos", "ing1": "neox400", "dose1": 25, "ing2": "", "dose2": null, "extraCost": null, "price": 2.5, "aliases": ["Preentreno sabor Frutos Rojos 30gr", "Preentreno Neox"]}, {"id": "p7", "name": "Creatina Creapure 5 g", "ing1": "creapure", "dose1": 5, "ing2": "", "dose2": null, "extraCost": null, "price": 1, "aliases": ["Creatina Creapure 5g", "Creatina Creapure", "Creapure"]}, {"id": "p8", "name": "ISO Chocolate blanco + Creatina", "ing1": "manhattan", "dose1": 25, "ing2": "creapure", "dose2": 5, "extraCost": null, "price": 2.9, "aliases": ["ISO Chocolate Blanco + Creatine 5g", "ISO Chocolate Blanco + Creatine"]}, {"id": "p9", "name": "ISO Chocolate + Creatina", "ing1": "manhattan", "dose1": 25, "ing2": "creapure", "dose2": 5, "extraCost": null, "price": 2.9, "aliases": ["ISO Chocolate + Creatine 5g"]}, {"id": "p10", "name": "Pre-entreno Xtreme Napalm Sandía", "ing1": "", "dose1": null, "ing2": "", "dose2": null, "extraCost": 0.85, "price": 2.5, "aliases": ["Pre-entreno sabor Sandía"]}]}, "fixed": {"items": [{"id": "leasing", "name": "Cuota leasing de la máquina", "amount": 190, "from": "2026-07", "to": "", "ebitda": false}, {"id": "tpv", "name": "TPV (Frekuent)", "amount": 17.5, "from": "2026-06", "to": "", "ebitda": true}]}, "expenses": {"items": [{"id": "e1", "date": "2026-06-01", "kind": "stock", "category": "Materia prima", "desc": "Factura proveedor ProShake n.º 20", "amount": 295.9}, {"id": "e2", "date": "2026-06-30", "kind": "stock", "category": "Agua", "desc": "Makro garrafas 8 x 8 L", "amount": 12.23}]}};
+const clone=o=>JSON.parse(JSON.stringify(o));
 const S = {
-  settings:{iva:10,gym:10,waterPrice:0.19,waterPerShake:0.3,cupCost:0.06,openingCash:0},
-  catalog:{ingredients:[],products:[]},
-  fixed:{items:[]},
-  expenses:{items:[]},
+  settings:clone(DEFAULTS.settings),
+  catalog:clone(DEFAULTS.catalog),
+  fixed:clone(DEFAULTS.fixed),
+  expenses:clone(DEFAULTS.expenses),
   sales:{}   // month -> {orders:[[orderNo,name,amount,time,machine]]}
 };
 let db=null, period='all', machine='all', dirty=false;
@@ -310,7 +318,7 @@ const queues={};
 function save(path){
   const body = path==='config/settings'?S.settings: path==='config/catalog'?S.catalog: path==='config/fixed'?S.fixed: path==='ledger/expenses'?S.expenses: S.sales[path.split('/')[1]];
   const data = JSON.parse(JSON.stringify(body));
-  if(!db){ try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){} return Promise.resolve(); }
+  if(!db){ persistLocal(); return Promise.resolve(); }
   $('#sync').textContent='Guardando…';
   const run=()=>db.doc(path).set(data).then(()=>{$('#sync').textContent='Guardado'}).catch(e=>{
     if(e&&e.code==='unavailable') return new Promise(r=>setTimeout(r,800+Math.random()*800)).then(()=>db.doc(path).set(data));
@@ -319,7 +327,11 @@ function save(path){
   queues[path]=(queues[path]||Promise.resolve()).then(run,run);
   return queues[path];
 }
-function delDoc(path){ if(!db){try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}return Promise.resolve()} return db.doc(path).delete(); }
+function persistLocal(){
+  try{localStorage.setItem(LS,JSON.stringify(S));$('#sync').textContent='Guardado en este navegador'}
+  catch(e){$('#sync').textContent='No se pudo guardar';toast('El navegador no deja guardar. Descarga una copia de seguridad.')}
+}
+function delDoc(path){ if(!db){persistLocal();return Promise.resolve()} return db.doc(path).delete(); }
 
 function requestRender(){
   const a=document.activeElement;
@@ -665,6 +677,20 @@ $('#mapTable').addEventListener('click',e=>{if(!e.target.matches('[data-newprod]
   S.catalog.products.push({id:uid(),name:n,ing1:'',dose1:25,ing2:'',dose2:null,extraCost:null,price:prices[0]||2.7,aliases:[n]});save('config/catalog');toast('Producto creado: completa sus ingredientes');renderAll();goTab('productos')});
 $('#monthsTable').addEventListener('click',e=>{if(!e.target.matches('[data-del-month]'))return;const m=e.target.closest('tr').dataset.month;if(!confirm(`¿Borrar las ventas de ${mLabel(m)}? Podrás volver a importarlas.`))return;delete S.sales[m];delDoc('sales/'+m);renderAll()});
 
+/* ---------------- backup ---------------- */
+$('#backupDown').addEventListener('click',()=>{
+  const blob=new Blob([JSON.stringify(S)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='dose-shakes-copia-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);toast('Copia descargada');
+});
+$('#backupIn').addEventListener('change',async e=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  try{const d=JSON.parse(await f.text());if(!d.catalog||!d.sales)throw 0;
+    if(!confirm('¿Sustituir los datos actuales por los de la copia?'))return;
+    loadSnapshot(d);persistLocal();renderAll();toast('Copia restaurada');
+  }catch(err){toast('Ese archivo no es una copia del dashboard')}
+});
+
 /* ---------------- import ---------------- */
 const drop=$('#drop');
 ['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over')}));
@@ -705,13 +731,22 @@ async function importFile(file){
       if(a){added+=a;touched.push(m);doc.orders.sort((x,y)=>String(y[3]).localeCompare(String(x[3])));await save('sales/'+m)}
     }
     const un=unmatchedNames().length;
-    out.innerHTML=`<div class="card"><h3>${added?`${added} ventas nuevas importadas`:'No había ventas nuevas'}</h3><p class="muted">${touched.length?'Meses actualizados: '+touched.map(mLabel).join(', ')+'. ':''}${dup?dup+' pedidos ya estaban y no se han duplicado. ':''}${skipped?skipped+' pedidos no completados se han ignorado. ':''}${un?`<b>Hay ${un} nombre(s) sin asignar abajo.</b>`:''}</p></div>`;
+    out.innerHTML=`<div class="card"><h3>${added?`${added} ventas nuevas importadas`:'No había ventas nuevas'}</h3><p class="muted">${touched.length?'Meses actualizados: '+touched.map(mLabel).join(', ')+'. ':''}${dup?dup+' pedidos ya estaban y no se han duplicado. ':''}${skipped?skipped+' pedidos no completados se han ignorado. ':''}${un?`<b>Hay ${un} nombre(s) sin asignar abajo.</b> `:''}Productos, ingredientes, costes y gastos no se han tocado.</p></div>`;
     if(touched.length){period=touched[touched.length-1]}
     renderAll(); toast(added?'Ventas importadas':'Sin cambios');
   }catch(err){out.innerHTML=`<div class="banner"><span>${esc(err.message||err)}</span></div>`}
 }
 
 /* ---------------- boot ---------------- */
+// Carga un estado guardado sin perder nunca catálogo ni costes: cada bloque vacío se rellena con los valores de partida.
+function loadSnapshot(saved){
+  if(saved.settings) S.settings=Object.assign(clone(DEFAULTS.settings),saved.settings);
+  S.catalog=(saved.catalog&&(saved.catalog.products||[]).length)?saved.catalog:clone(DEFAULTS.catalog);
+  if(!(S.catalog.ingredients||[]).length) S.catalog.ingredients=clone(DEFAULTS.catalog.ingredients);
+  S.fixed=(saved.fixed&&(saved.fixed.items||[]).length)?saved.fixed:clone(DEFAULTS.fixed);
+  S.expenses=(saved.expenses&&(saved.expenses.items||[]).length)?saved.expenses:clone(DEFAULTS.expenses);
+  S.sales=saved.sales||{};
+}
 function applyDoc(key,snap){
   if(!snap.exists) return; const d=snap.data();
   if(key==='settings') S.settings=Object.assign({},S.settings,d);
@@ -723,8 +758,8 @@ renderAll();
 (async()=>{
   try{ db = window.claude&&window.claude.use ? await window.claude.use('db') : null }catch(e){db=null}
   if(!db){
-    try{const saved=JSON.parse(localStorage.getItem(LS)||'null');if(saved)Object.assign(S,saved)}catch(e){}
-    $('#sync').textContent='Guardado en este navegador'; renderAll(); return;
+    try{const saved=JSON.parse(localStorage.getItem(LS)||'null');if(saved)loadSnapshot(saved)}catch(e){}
+    persistLocal(); $('#backupCard').hidden=false; renderAll(); return;
   }
   $('#sync').textContent='Sincronizado';
   const map={'config/settings':'settings','config/catalog':'catalog','config/fixed':'fixed','ledger/expenses':'expenses'};
