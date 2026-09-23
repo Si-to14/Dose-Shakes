@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dose Shakes · Cuenta de resultados</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#D6472B; --red-soft:#F4D6CC; --ink:#141414; --ink-2:#5B524A; --paper:#F3ECDC; --card:#FFF9EE;
+  --line:#E2D6BF; --yellow:#F0B429; --shake:#E9B98A; --good:#2E7D4F; --good-soft:#D7EEDD; --bad:#B8321C;
+  --display:"Fredoka","Trebuchet MS",system-ui,sans-serif; --body:"Work Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --red:#EE6446; --red-soft:#4A2419; --ink:#F3ECDC; --ink-2:#BFB3A2; --paper:#171311; --card:#221C18;
+    --line:#3A312A; --yellow:#F0B429; --shake:#C8915F; --good:#5CC389; --good-soft:#1D3527; --bad:#FF7A5E; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --red:#EE6446; --red-soft:#4A2419; --ink:#F3ECDC; --ink-2:#BFB3A2; --paper:#171311; --card:#221C18;
+  --line:#3A312A; --yellow:#F0B429; --shake:#C8915F; --good:#5CC389; --good-soft:#1D3527; --bad:#FF7A5E; color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 20px 60px}
+h1,h2,h3{font-family:var(--display);font-weight:600;margin:0;line-height:1.15}
+h2{font-size:22px;margin-bottom:12px}
+h3{font-size:17px;margin-bottom:8px}
+.num{font-variant-numeric:tabular-nums}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:44px;height:44px;border-radius:50%;background:var(--red);display:grid;place-items:center;color:#fff;font-family:var(--display);font-weight:700;font-size:20px;transform:rotate(-8deg)}
+.brand h1{font-size:26px;color:var(--red)}
+.brand small{display:block;color:var(--ink-2);font-size:13px}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+select,input[type=text],input[type=number],input[type=date],input[type=month]{background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:7px 10px;min-width:0}
+input[type=number]{width:90px}
+.sync{font-size:12px;color:var(--ink-2)}
+
+nav.tabs{display:flex;gap:4px;border-bottom:2px solid var(--ink);margin-bottom:22px;overflow-x:auto}
+nav.tabs button{background:none;border:0;padding:10px 16px;font-family:var(--display);font-weight:600;font-size:16px;cursor:pointer;color:var(--ink-2);border-radius:12px 12px 0 0;white-space:nowrap}
+nav.tabs button[aria-selected=true]{background:var(--ink);color:var(--paper)}
+.pane{display:none}.pane.on{display:block}
+
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:18px}
+.grid{display:grid;gap:16px}
+.g-hero{grid-template-columns:300px 1fr}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:repeat(3,1fr)}
+@media (max-width:900px){.g-hero,.g2,.g3{grid-template-columns:1fr}}
+.mt{margin-top:16px}
+
+/* hero cup */
+.cupbox{display:flex;flex-direction:column;align-items:center;text-align:center}
+.cupbox svg{width:190px;height:auto}
+.cup-caption{font-family:var(--display);font-size:20px;font-weight:600;margin-top:6px}
+.cup-sub{color:var(--ink-2);font-size:13px;max-width:240px}
+.verdict{font-family:var(--display);font-size:34px;font-weight:600;line-height:1.1;margin:2px 0 6px}
+.verdict.neg{color:var(--bad)}.verdict.pos{color:var(--good)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+@media (max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{border-top:3px solid var(--ink);padding-top:8px}
+.kpi b{display:block;font-family:var(--display);font-size:22px;font-weight:600}
+.kpi span{font-size:12.5px;color:var(--ink-2)}
+.kpi.red{border-color:var(--red)}.kpi.yel{border-color:var(--yellow)}.kpi.grn{border-color:var(--good)}
+
+/* waterfall */
+table{width:100%;border-collapse:collapse}
+.pl td{padding:6px 4px;border-bottom:1px dashed var(--line)}
+.pl td:last-child{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pl td.pct{color:var(--ink-2);font-size:12.5px;width:64px;text-align:right;white-space:nowrap;font-family:var(--body);font-weight:400}
+.pl tr.sub td{font-weight:600;border-bottom:1.5px solid var(--ink)}
+.pl tr.big td{font-family:var(--display);font-size:18px;font-weight:600;border-bottom:none}
+.pl tr.minus td:first-child{padding-left:16px;color:var(--ink-2)}
+.pos{color:var(--good)}.neg{color:var(--bad)}
+
+.tablewrap{overflow-x:auto}
+.data th{font-size:12.5px;text-align:left;color:var(--ink-2);font-weight:600;padding:6px 6px;border-bottom:1.5px solid var(--ink);white-space:nowrap}
+.data td{padding:6px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+.data td.r,.data th.r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.data input[type=text]{width:100%;min-width:200px}
+.data select{max-width:150px}
+#prodTable td:first-child{min-width:230px}
+.data input[type=number]{width:64px}
+.chip{display:inline-flex;align-items:center;gap:4px;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:1px 2px 1px 7px;font-size:11.5px;margin:4px 3px 0 0;color:var(--ink-2)}
+.chip button{border:0;background:none;cursor:pointer;color:var(--ink-2);padding:0 4px;font-size:14px;line-height:1}
+.pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:600}
+.pill.good{background:var(--good-soft);color:var(--good)}.pill.bad{background:var(--red-soft);color:var(--bad)}
+
+.btn{background:var(--ink);color:var(--paper);border:0;border-radius:999px;padding:8px 16px;font-weight:600;cursor:pointer}
+.btn.red{background:var(--red);color:#fff}
+.btn.ghost{background:none;color:var(--ink);border:1.5px solid var(--ink)}
+.btn.sm{padding:4px 10px;font-size:13px}
+.x{border:0;background:none;cursor:pointer;color:var(--ink-2);font-size:18px;padding:2px 6px}
+.x:hover{color:var(--bad)}
+
+.tips{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.tips li{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;padding:12px;border-radius:12px;background:var(--paper)}
+.tips .ic{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-family:var(--display);color:#fff;background:var(--ink)}
+.tips li.warn .ic{background:var(--red)}.tips li.ok .ic{background:var(--good)}.tips li.idea .ic{background:var(--yellow);color:#141414}
+.tips b{font-weight:600}
+.muted{color:var(--ink-2);font-size:13px}
+.chart{position:relative;height:260px}
+.chart.sm{height:220px}
+
+.drop{border:2.5px dashed var(--ink-2);border-radius:18px;padding:34px 20px;text-align:center;cursor:pointer;background:var(--card)}
+.drop.over{border-color:var(--red);background:var(--red-soft)}
+.drop h3{font-size:20px}
+.banner{background:var(--red-soft);border:1.5px solid var(--red);border-radius:12px;padding:10px 14px;margin-bottom:16px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.form-row{display:flex;gap:8px;flex-wrap:wrap;align-items:end}
+.form-row label{display:flex;flex-direction:column;font-size:12.5px;color:var(--ink-2);gap:3px}
+.settings{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.settings label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink-2)}
+.settings input{width:100%}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}#cupFill{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <header class="top">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">D</div>
+      <div><h1>Dose Shakes</h1><small>Cuenta de resultados y EBITDA de tus máquinas</small></div>
+    </div>
+    <div class="controls">
+      <label class="muted" for="period">Periodo</label>
+      <select id="period"></select>
+      <select id="machine" hidden></select>
+      <span class="sync" id="sync">Cargando…</span>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="resumen" aria-selected="true">Resumen</button>
+    <button role="tab" data-tab="productos" aria-selected="false">Productos</button>
+    <button role="tab" data-tab="costes" aria-selected="false">Costes y gastos</button>
+    <button role="tab" data-tab="importar" aria-selected="false">Importar ventas</button>
+  </nav>
+
+  <!-- RESUMEN -->
+  <section class="pane on" id="p-resumen">
+    <div id="unmatchedBanner"></div>
+    <div class="grid g-hero">
+      <div class="card cupbox">
+        <svg viewBox="0 0 200 250" role="img" aria-labelledby="cupTitle">
+          <title id="cupTitle">Batidos vendidos frente al punto de equilibrio</title>
+          <defs><clipPath id="cupClip"><path d="M40 40 L160 40 L146 232 Q145 240 137 240 L63 240 Q55 240 54 232 Z"/></clipPath></defs>
+          <rect x="116" y="0" width="10" height="60" rx="4" fill="var(--red)" transform="rotate(14 121 30)"/>
+          <g clip-path="url(#cupClip)">
+            <rect x="0" y="0" width="200" height="250" fill="var(--paper)"/>
+            <rect id="cupFill" x="0" y="240" width="200" height="0" fill="var(--shake)" style="transition:y .9s ease, height .9s ease"/>
+          </g>
+          <path d="M40 40 L160 40 L146 232 Q145 240 137 240 L63 240 Q55 240 54 232 Z" fill="none" stroke="var(--ink)" stroke-width="4" stroke-linejoin="round"/>
+          <rect x="32" y="30" width="136" height="12" rx="6" fill="var(--ink)"/>
+          <line id="beLine" x1="30" x2="170" y1="80" y2="80" stroke="var(--red)" stroke-width="3" stroke-dasharray="7 5"/>
+          <text id="beText" x="100" y="74" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="12" font-weight="600" fill="var(--red)"></text>
+        </svg>
+        <div class="cup-caption num" id="cupCaption">—</div>
+        <div class="cup-sub" id="cupSub"></div>
+      </div>
+      <div class="card">
+        <div class="muted" id="heroLabel">EBITDA</div>
+        <div class="verdict num" id="heroValue">—</div>
+        <div id="heroText" class="muted" style="font-size:14px;max-width:62ch"></div>
+        <div class="kpis" id="kpis"></div>
+      </div>
+    </div>
+
+    <div class="grid g2 mt">
+      <div class="card">
+        <h2>Cascada de resultados</h2>
+        <table class="pl" id="plTable"></table>
+      </div>
+      <div class="card">
+        <h2>Qué haría yo con estos números</h2>
+        <ul class="tips" id="tips"></ul>
+      </div>
+    </div>
+
+    <div class="card mt">
+      <h2>Evolución mensual</h2>
+      <div class="chart"><canvas id="chMonthly"></canvas></div>
+    </div>
+
+    <div class="grid g3 mt">
+      <div class="card"><h3>Productos más vendidos</h3><div class="chart sm"><canvas id="chProducts"></canvas></div></div>
+      <div class="card"><h3>Ventas por hora</h3><div class="chart sm"><canvas id="chHours"></canvas></div></div>
+      <div class="card"><h3>Ventas por día de la semana</h3><div class="chart sm"><canvas id="chDays"></canvas></div></div>
+    </div>
+
+    <div class="card mt">
+      <h2>Caja acumulada</h2>
+      <p class="muted">Dinero que entra (ventas sin IVA) menos lo que sale (comisión, cuotas, gastos y compras de stock). Aproximado: no tiene en cuenta cuándo pagas el IVA.</p>
+      <div class="chart sm"><canvas id="chCash"></canvas></div>
+    </div>
+  </section>
+
+  <!-- PRODUCTOS -->
+  <section class="pane" id="p-productos">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+        <h2>Catálogo y margen por batido</h2>
+        <button class="btn red" id="addProduct">Añadir producto</button>
+      </div>
+      <p class="muted">El margen es lo que te queda de cada venta después de quitar IVA, ingredientes, agua, vaso y comisión del gimnasio. Los nombres pequeños debajo de cada producto son cómo aparece en el software de la máquina.</p>
+      <div class="tablewrap"><table class="data" id="prodTable"></table></div>
+    </div>
+    <div class="card mt">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+        <h2>Ingredientes</h2>
+        <button class="btn ghost" id="addIng">Añadir ingrediente</button>
+      </div>
+      <p class="muted">Precio de compra y contenido del envase. Si cambias de proveedor, actualízalo aquí y todos los márgenes se recalculan.</p>
+      <div class="tablewrap"><table class="data" id="ingTable"></table></div>
+    </div>
+  </section>
+
+  <!-- COSTES -->
+  <section class="pane" id="p-costes">
+    <div class="card">
+      <h2>Supuestos</h2>
+      <div class="settings" id="settingsForm"></div>
+    </div>
+    <div class="card mt">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+        <h2>Costes fijos mensuales</h2>
+        <button class="btn ghost" id="addFixed">Añadir coste fijo</button>
+      </div>
+      <p class="muted">Se aplican solos cada mes desde la fecha de inicio. Marca "cuenta en EBITDA" en los gastos de operar (TPV, seguro, gestoría…). La cuota de un leasing o préstamo es financiación: queda fuera del EBITDA, pero sí se resta en el resultado final.</p>
+      <div class="tablewrap"><table class="data" id="fixedTable"></table></div>
+    </div>
+    <div class="card mt">
+      <h2>Gastos puntuales y compras</h2>
+      <p class="muted">"Compra de stock" (proteína, vasos, agua) solo afecta a la caja: el coste de cada batido ya se calcula con la receta, así no se cuenta dos veces. "Gasto operativo" (reparación, marketing, gasolina…) sí resta del EBITDA de su mes.</p>
+      <div class="form-row" style="margin:10px 0 14px">
+        <label>Fecha<input type="date" id="exDate"></label>
+        <label>Tipo<select id="exKind"><option value="op">Gasto operativo</option><option value="stock">Compra de stock</option></select></label>
+        <label>Categoría<input type="text" id="exCat" list="catList" placeholder="Marketing"></label>
+        <label style="flex:1;min-width:160px">Descripción<input type="text" id="exDesc" placeholder="Flyers septiembre"></label>
+        <label>Importe (€)<input type="number" id="exAmt" step="0.01" min="0"></label>
+        <button class="btn red" id="addExpense">Guardar gasto</button>
+      </div>
+      <datalist id="catList"><option>Materia prima</option><option>Vasos</option><option>Agua</option><option>Mantenimiento</option><option>Marketing</option><option>Transporte</option><option>Gestoría</option><option>Seguro</option></datalist>
+      <div class="tablewrap"><table class="data" id="expTable"></table></div>
+    </div>
+  </section>
+
+  <!-- IMPORTAR -->
+  <section class="pane" id="p-importar">
+    <label class="drop" id="drop" for="fileIn">
+      <h3>Arrastra aquí el Excel de ventas de la máquina</h3>
+      <p class="muted">El archivo "Export Sales Data" del software. Puedes subir el mes entero o un rango de fechas: los pedidos que ya estaban no se duplican.</p>
+      <span class="btn">Elegir archivo</span>
+      <input type="file" id="fileIn" accept=".xlsx,.xls,.csv" hidden>
+    </label>
+    <div id="importResult" class="mt"></div>
+    <div class="card mt" id="mapCard" hidden>
+      <h2>Productos sin asignar</h2>
+      <p class="muted">Estos nombres vienen de la máquina y no coinciden con ningún producto del catálogo. Asígnalos para que se calcule su coste. Si es un producto nuevo, créalo en un clic.</p>
+      <div class="tablewrap"><table class="data" id="mapTable"></table></div>
+    </div>
+    <div class="card mt">
+      <h2>Meses cargados</h2>
+      <div class="tablewrap"><table class="data" id="monthsTable"></table></div>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+(function(){
+"use strict";
+/* ---------------- state & storage ---------------- */
+const S = {
+  settings:{iva:10,gym:10,waterPrice:0.19,waterPerShake:0.3,cupCost:0.06,openingCash:0},
+  catalog:{ingredients:[],products:[]},
+  fixed:{items:[]},
+  expenses:{items:[]},
+  sales:{}   // month -> {orders:[[orderNo,name,amount,time,machine]]}
+};
+let db=null, period='all', machine='all', dirty=false;
+const LS='dose-dashboard-v1';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,10);
+const eur=(v,d=2)=>(isFinite(v)?(Math.abs(v)<0.005?0:v):0).toLocaleString('es-ES',{minimumFractionDigits:d,maximumFractionDigits:d})+' €';
+const eur0=v=>eur(v,0);
+const fmt1=v=>(isFinite(v)?v:0).toLocaleString('es-ES',{maximumFractionDigits:1});
+const pct=v=>isFinite(v)?(v*100).toLocaleString('es-ES',{maximumFractionDigits:1})+' %':'—';
+const MONTHS=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const mLabel=m=>{const [y,mm]=m.split('-');return MONTHS[+mm-1]+' '+y};
+const mShort=m=>{const [y,mm]=m.split('-');return MONTHS[+mm-1].slice(0,3)+' '+y.slice(2)};
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('on'),2600)}
+
+const queues={};
+function save(path){
+  const body = path==='config/settings'?S.settings: path==='config/catalog'?S.catalog: path==='config/fixed'?S.fixed: path==='ledger/expenses'?S.expenses: S.sales[path.split('/')[1]];
+  const data = JSON.parse(JSON.stringify(body));
+  if(!db){ try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){} return Promise.resolve(); }
+  $('#sync').textContent='Guardando…';
+  const run=()=>db.doc(path).set(data).then(()=>{$('#sync').textContent='Guardado'}).catch(e=>{
+    if(e&&e.code==='unavailable') return new Promise(r=>setTimeout(r,800+Math.random()*800)).then(()=>db.doc(path).set(data));
+    $('#sync').textContent='No se pudo guardar'; toast('No se pudo guardar: '+(e&&e.message||'error'));
+  });
+  queues[path]=(queues[path]||Promise.resolve()).then(run,run);
+  return queues[path];
+}
+function delDoc(path){ if(!db){try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}return Promise.resolve()} return db.doc(path).delete(); }
+
+function requestRender(){
+  const a=document.activeElement;
+  if(a && $('#app').contains(a) && /INPUT|SELECT/.test(a.tagName) && a.id!=='period' && a.id!=='machine'){dirty=true;return}
+  renderAll();
+}
+document.addEventListener('focusout',()=>setTimeout(()=>{if(dirty){dirty=false;renderAll()}},0));
+
+/* ---------------- calculations ---------------- */
+const ingById=id=>S.catalog.ingredients.find(i=>i.id===id);
+function ingPerKg(i){return i&&+i.kg>0?(+i.price)/(+i.kg):0}
+function rawCost(p){
+  let c=+p.extraCost||0;
+  if(p.ing1){c+=ingPerKg(ingById(p.ing1))*(+p.dose1||0)/1000}
+  if(p.ing2){c+=ingPerKg(ingById(p.ing2))*(+p.dose2||0)/1000}
+  return c;
+}
+function packCost(){const s=S.settings;return (+s.waterPrice||0)*(+s.waterPerShake||0)+(+s.cupCost||0)}
+function unitEcon(p,price){
+  const s=S.settings, pr=price??(+p.price||0);
+  const net=pr/(1+(+s.iva||0)/100), raw=p?rawCost(p):0, pack=packCost(), gym=pr*(+s.gym||0)/100;
+  return {price:pr,net,raw,pack,gym,margin:net-raw-pack-gym};
+}
+function norm(s){return String(s||'').trim().toLowerCase().replace(/\s+/g,' ')}
+function matchProduct(name){
+  const n=norm(name);
+  return S.catalog.products.find(p=>norm(p.name)===n||(p.aliases||[]).some(a=>norm(a)===n))||null;
+}
+function allMonths(){
+  const set=new Set(Object.keys(S.sales).filter(m=>(S.sales[m].orders||[]).length));
+  S.expenses.items.forEach(e=>e.date&&set.add(e.date.slice(0,7)));
+  return [...set].sort();
+}
+function monthsInPeriod(){const ms=allMonths();return period==='all'?ms:ms.filter(m=>m===period)}
+function ordersOf(months){
+  const out=[];
+  months.forEach(m=>(S.sales[m]?.orders||[]).forEach(o=>{if(machine==='all'||o[4]===machine)out.push(o)}));
+  return out;
+}
+function fixedFor(m){
+  let ebitda=0, below=0; const rows=[];
+  S.fixed.items.forEach(f=>{
+    if(f.from&&m<f.from) return; if(f.to&&m>f.to) return;
+    const a=+f.amount||0; rows.push(f); if(f.ebitda) ebitda+=a; else below+=a;
+  });
+  return {ebitda,below,rows};
+}
+function calcMonth(m){
+  const orders=ordersOf([m]);
+  const r={month:m,units:0,gross:0,net:0,raw:0,pack:0,gym:0,unmatched:0,fixedOp:0,fixedFin:0,opex:0,stock:0,byProd:{},hours:Array(24).fill(0),days:Array(7).fill(0)};
+  orders.forEach(o=>{
+    const p=matchProduct(o[1]); const e=unitEcon(p,+o[2]);
+    r.units++; r.gross+=e.price; r.net+=e.net; r.raw+=e.raw; r.pack+=e.pack; r.gym+=e.gym;
+    if(!p) r.unmatched++;
+    const key=p?p.id:'?'+o[1];
+    const bp=r.byProd[key]||(r.byProd[key]={name:p?p.name:o[1],units:0,net:0,margin:0,matched:!!p});
+    bp.units++; bp.net+=e.net; bp.margin+=e.margin;
+    const t=String(o[3]||''); const h=+t.slice(11,13); if(!isNaN(h)) r.hours[h]++;
+    const d=new Date(t.slice(0,10)+'T12:00:00'); if(!isNaN(d)) r.days[(d.getDay()+6)%7]++;
+  });
+  const f=fixedFor(m); r.fixedOp=f.ebitda; r.fixedFin=f.below;
+  S.expenses.items.forEach(x=>{if(x.date&&x.date.slice(0,7)===m){if(x.kind==='stock')r.stock+=+x.amount||0;else r.opex+=+x.amount||0}});
+  r.variable=r.raw+r.pack+r.gym; r.contrib=r.net-r.variable;
+  r.ebitda=r.contrib-r.fixedOp-r.opex; r.result=r.ebitda-r.fixedFin;
+  return r;
+}
+function sumRes(list){
+  const t={units:0,gross:0,net:0,raw:0,pack:0,gym:0,unmatched:0,fixedOp:0,fixedFin:0,opex:0,stock:0,variable:0,contrib:0,ebitda:0,result:0,byProd:{},hours:Array(24).fill(0),days:Array(7).fill(0)};
+  list.forEach(r=>{
+    ['units','gross','net','raw','pack','gym','unmatched','fixedOp','fixedFin','opex','stock','variable','contrib','ebitda','result'].forEach(k=>t[k]+=r[k]);
+    r.hours.forEach((v,i)=>t.hours[i]+=v); r.days.forEach((v,i)=>t.days[i]+=v);
+    Object.entries(r.byProd).forEach(([k,v])=>{const b=t.byProd[k]||(t.byProd[k]={name:v.name,units:0,net:0,margin:0,matched:v.matched});b.units+=v.units;b.net+=v.net;b.margin+=v.margin});
+  });
+  return t;
+}
+function daysInMonth(m){const [y,mm]=m.split('-').map(Number);return new Date(y,mm,0).getDate()}
+function activeDays(m){
+  // days of the month the machine was actually selling: from first order (if first month) to today (if current month)
+  const [y,mm]=m.split('-').map(Number); const dim=daysInMonth(m);
+  const now=new Date(); const cur=now.getFullYear()===y&&now.getMonth()+1===mm;
+  let end=cur?now.getDate():dim;
+  const firstM=allMonths()[0]; let start=1;
+  if(m===firstM){const ts=(S.sales[m]?.orders||[]).map(o=>String(o[3])).sort()[0]; if(ts) start=+ts.slice(8,10)}
+  return {days:Math.max(1,end-start+1),dim,cur};
+}
+
+/* ---------------- rendering ---------------- */
+const charts={};
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function mkChart(id,cfg){
+  if(typeof Chart==='undefined') return;
+  if(charts[id]) charts[id].destroy();
+  const ink=css('--ink-2'), line=css('--line');
+  Chart.defaults.animation=false; Chart.defaults.font.family='Work Sans, system-ui, sans-serif'; Chart.defaults.color=ink;
+  cfg.options=Object.assign({responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}},cfg.options||{});
+  const sc=cfg.options.scales||{};
+  Object.values(sc).forEach(a=>{a.grid=Object.assign({color:line},a.grid||{});a.border={display:false}});
+  charts[id]=new Chart(document.getElementById(id),cfg);
+}
+
+function renderPeriodSelect(){
+  const ms=allMonths(); const sel=$('#period');
+  if(period!=='all'&&!ms.includes(period)) period='all';
+  sel.innerHTML='<option value="all">Todo el periodo</option>'+ms.slice().reverse().map(m=>`<option value="${m}">${mLabel(m)}</option>`).join('');
+  sel.value=period;
+  const machines=new Set(); Object.values(S.sales).forEach(d=>(d.orders||[]).forEach(o=>o[4]&&machines.add(o[4])));
+  const ms2=$('#machine');
+  if(machines.size>1){ms2.hidden=false;ms2.innerHTML='<option value="all">Todas las máquinas</option>'+[...machines].map(x=>`<option>${esc(x)}</option>`).join('');ms2.value=machine}
+  else {ms2.hidden=true;machine='all'}
+}
+
+function renderResumen(){
+  const months=monthsInPeriod(); const res=months.map(calcMonth); const T=sumRes(res);
+  const nMonths=Math.max(1,months.length);
+  // break-even per month
+  const avgC=T.units?T.contrib/T.units:0;
+  const lastM=months[months.length-1]; const fxNow=lastM?fixedFor(lastM):{ebitda:0,below:0};
+  const fixedMonth=fxNow.ebitda+fxNow.below+T.opex/nMonths;
+  const beUnits=avgC>0?Math.ceil(fixedMonth/avgC):0;
+  const beEbitda=avgC>0?Math.ceil((fxNow.ebitda+T.opex/nMonths)/avgC):0;
+  const totalDays=months.reduce((a,m)=>a+activeDays(m).days,0)||1;
+  const perDay=T.units/totalDays;
+  let unitsMonth=perDay*30, projNote='';
+  if(period!=='all'){
+    const ad=activeDays(period);
+    if(ad.cur){unitsMonth=perDay*ad.dim; projNote=`A este ritmo (${fmt1(perDay)} al día) cerrarás el mes con unos ${Math.round(unitsMonth)} batidos.`}
+    else unitsMonth=T.units;
+  }
+  // cup
+  const maxU=Math.max(beUnits*1.25,unitsMonth*1.05,10);
+  const top=40,bottom=240,h=bottom-top;
+  const fillH=Math.min(1,unitsMonth/maxU)*h;
+  const f=$('#cupFill'); f.setAttribute('y',bottom-fillH); f.setAttribute('height',fillH);
+  const beY=bottom-Math.min(1,beUnits/maxU)*h;
+  $('#beLine').setAttribute('y1',beY);$('#beLine').setAttribute('y2',beY);
+  $('#beText').setAttribute('y',beY-6); $('#beText').textContent=beUnits?`equilibrio: ${beUnits}`:'';
+  $('#cupCaption').textContent=period==='all'?`${Math.round(unitsMonth)} batidos/mes de media`:`${T.units} batidos en ${MONTHS[+period.slice(5)-1]}`;
+  $('#cupSub').textContent=beUnits?`Con los costes actuales necesitas ${beUnits} al mes (${fmt1(beUnits/30)} al día) para cubrir todos los costes, cuota incluida. ${projNote}`:'Importa ventas para ver tu punto de equilibrio.';
+
+  // hero
+  const hv=$('#heroValue'); hv.textContent=eur(T.ebitda); hv.className='verdict num '+(T.ebitda>=0?'pos':'neg');
+  $('#heroLabel').textContent='EBITDA · '+(period==='all'?`${months.length?mLabel(months[0])+' – '+mLabel(months[months.length-1]):'sin datos'}`:mLabel(period));
+  const resTxt=T.result>=0?`<span class="pos">ganas ${eur(T.result)}</span>`:`<span class="neg">pierdes ${eur(-T.result)}</span>`;
+  $('#heroText').innerHTML = T.units? `La operación genera ${eur(T.ebitda)} antes de pagar la máquina. Después de la cuota (${eur(T.fixedFin)}) ${resTxt}. Cada batido te deja de media ${eur(avgC)} limpios.` : 'Todavía no hay ventas en este periodo. Ve a "Importar ventas" y sube el Excel de la máquina.';
+  $('#kpis').innerHTML=[
+    ['Ventas cobradas (con IVA)',eur(T.gross),'red'],
+    ['Batidos vendidos',T.units.toLocaleString('es-ES'),'yel'],
+    ['Ticket medio',eur(T.units?T.gross/T.units:0),''],
+    ['Margen de contribución',pct(T.net?T.contrib/T.net:0),'grn'],
+  ].map(([l,v,c])=>`<div class="kpi ${c}"><b class="num">${v}</b><span>${l}</span></div>`).join('');
+
+  // P&L
+  const rows=[
+    ['Ventas cobradas (con IVA)',T.gross,''],
+    ['IVA repercutido',-(T.gross-T.net),'minus'],
+    ['Ingresos netos',T.net,'sub'],
+    ['Ingredientes',-T.raw,'minus'],
+    ['Agua y vasos',-T.pack,'minus'],
+    ['Comisión gimnasio',-T.gym,'minus'],
+    ['Margen de contribución',T.contrib,'sub'],
+    ['Costes fijos operativos',-T.fixedOp,'minus'],
+    ['Otros gastos operativos',-T.opex,'minus'],
+    ['EBITDA',T.ebitda,'big'],
+    ['Cuota máquina (leasing)',-T.fixedFin,'minus'],
+    ['Resultado después de cuota',T.result,'big'],
+  ];
+  $('#plTable').innerHTML=rows.map(([l,v,c])=>`<tr class="${c}"><td>${l}</td><td class="pct">${T.net&&c!=='minus'&&l!=='Ventas cobradas (con IVA)'?pct(v/T.net):''}</td><td class="${c==='big'?(v>=0?'pos':'neg'):''}">${eur(v)}</td></tr>`).join('');
+
+  renderTips(T,res,months,avgC,beUnits,beEbitda,unitsMonth);
+
+  // monthly chart (always all months)
+  const all=allMonths().map(calcMonth);
+  mkChart('chMonthly',{type:'bar',data:{labels:all.map(r=>mShort(r.month)),datasets:[
+    {label:'Ingresos netos',data:all.map(r=>+r.net.toFixed(2)),backgroundColor:css('--shake'),borderRadius:6,order:3},
+    {label:'EBITDA',type:'line',data:all.map(r=>+r.ebitda.toFixed(2)),borderColor:css('--good'),backgroundColor:css('--good'),tension:.3,order:1},
+    {label:'Resultado tras cuota',type:'line',data:all.map(r=>+r.result.toFixed(2)),borderColor:css('--red'),backgroundColor:css('--red'),borderDash:[6,4],tension:.3,order:2},
+  ]},options:{plugins:{legend:{display:true,position:'bottom'},tooltip:{callbacks:{label:c=>c.dataset.label+': '+eur(c.parsed.y)}}},scales:{y:{ticks:{callback:v=>v+' €'}},x:{grid:{display:false}}}}});
+
+  const prods=Object.values(T.byProd).sort((a,b)=>b.units-a.units).slice(0,8);
+  mkChart('chProducts',{type:'bar',data:{labels:prods.map(p=>p.name.length>20?p.name.slice(0,19)+'…':p.name),datasets:[{data:prods.map(p=>p.units),backgroundColor:prods.map((p,i)=>i===0?css('--red'):css('--shake')),borderRadius:5}]},options:{indexAxis:'y',scales:{x:{ticks:{precision:0}},y:{grid:{display:false}}}}});
+  const hrs=[...Array(17)].map((_,i)=>i+6);
+  const peak=Math.max(...T.hours);
+  mkChart('chHours',{type:'bar',data:{labels:hrs.map(h=>h+'h'),datasets:[{data:hrs.map(h=>T.hours[h]),backgroundColor:hrs.map(h=>T.hours[h]===peak&&peak>0?css('--red'):css('--shake')),borderRadius:4}]},options:{scales:{y:{ticks:{precision:0}},x:{grid:{display:false}}}}});
+  const dn=['L','M','X','J','V','S','D'];
+  mkChart('chDays',{type:'bar',data:{labels:dn,datasets:[{data:T.days,backgroundColor:T.days.map((v,i)=>i>=5?css('--line'):css('--shake')),borderRadius:4}]},options:{scales:{y:{ticks:{precision:0}},x:{grid:{display:false}}}}});
+
+  let bal=+S.settings.openingCash||0;
+  const cash=all.map(r=>{bal+=r.net-r.gym-r.fixedOp-r.fixedFin-r.opex-r.stock;return +bal.toFixed(2)});
+  mkChart('chCash',{type:'line',data:{labels:all.map(r=>mShort(r.month)),datasets:[{data:cash,borderColor:css('--ink'),backgroundColor:css('--red-soft'),fill:'origin',tension:.3}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>eur(c.parsed.y)}}},scales:{y:{ticks:{callback:v=>v+' €'}},x:{grid:{display:false}}}}});
+
+  // unmatched banner
+  const un=unmatchedNames();
+  $('#unmatchedBanner').innerHTML=un.length?`<div class="banner"><span><b>${un.length} producto${un.length>1?'s':''} de la máquina sin asignar.</b> Sus ventas cuentan como ingreso pero sin coste de ingredientes.</span><button class="btn sm" data-goto="importar">Asignarlos</button></div>`:'';
+}
+
+function renderTips(T,res,months,avgC,beUnits,beEbitda,unitsMonth){
+  const tips=[];
+  if(!T.units){$('#tips').innerHTML='<li class="idea"><span class="ic">!</span><div>Sube el primer Excel de ventas y aquí verás consejos concretos basados en tus números.</div></li>';return}
+  const perDay=unitsMonth/30;
+  if(beUnits>0){
+    if(unitsMonth<beUnits){
+      const gap=beUnits-unitsMonth;
+      tips.push(['warn',`<b>El problema es el volumen, no el margen.</b> Vendes unos ${Math.round(unitsMonth)} batidos al mes (${fmt1(perDay)}/día) y necesitas ${beUnits} (${fmt1(beUnits/30)}/día) para cubrir también la cuota. Te faltan unos ${fmt1(gap/30)} batidos al día: ${Math.ceil(gap/4.3)} a la semana. El EBITDA sale positivo desde ${beEbitda} al mes, así que la operación funciona: lo que no cubres todavía es la máquina.`]);
+    } else tips.push(['ok',`<b>Estás por encima del punto de equilibrio.</b> Cada batido extra por encima de ${beUnits}/mes es casi todo beneficio (${eur(avgC)}).`]);
+  }
+  // combo creatine check
+  const P=S.catalog.products;
+  const weakCombos=[];
+  P.filter(p=>p.ing2&&+p.dose2>0).forEach(p=>{
+    const base=P.find(b=>b.ing1===p.ing1&&!b.ing2&&+b.dose1===+p.dose1);
+    if(!base) return;
+    const inc=unitEcon(p).margin-unitEcon(base).margin, diff=(+p.price)-(+base.price);
+    if(inc<0.15 && diff>0) weakCombos.push({p,base,inc,diff});
+  });
+  if(weakCombos.length){
+    const w=weakCombos[0]; const solo=P.find(x=>x.ing1===w.p.ing2&&!x.ing2);
+    const sold=weakCombos.reduce((a,c)=>a+(T.byProd[c.p.id]?.units||0),0);
+    tips.push(['idea',`<b>Los combos con creatina casi no te dejan más que el batido solo.</b> ${weakCombos.map(c=>'"'+esc(c.p.name)+'"').join(' y ')}: cobras ${eur(w.diff)} más pero ganas solo ${eur(w.inc)} extra. Llevas ${sold} vendidos. A ${eur(+w.base.price+0.5)} ganarías unos ${eur(0.5/(1+S.settings.iva/100)*(1-S.settings.gym/100)-(0.2/(1+S.settings.iva/100)*(1-S.settings.gym/100)))} más por combo y seguiría siendo más barato que comprar batido y creatina por separado (${eur(+w.base.price+(+(solo?.price)||1))}).`]);
+  }
+  // top & weak products
+  const prods=Object.values(T.byProd).filter(p=>p.matched&&p.units>0);
+  if(prods.length){
+    const best=prods.slice().sort((a,b)=>b.margin-a.margin)[0];
+    const share=best.units/T.units;
+    tips.push(['ok',`<b>${esc(best.name)}</b> es tu producto estrella: ${best.units} ventas (${pct(share)}) y ${eur(best.margin)} de margen. Que nunca se quede sin stock y que salga el primero en la pantalla.`]);
+    const weak=prods.filter(p=>p.units/T.units<0.03);
+    if(weak.length) tips.push(['idea',`<b>Poca rotación:</b> ${weak.map(w=>esc(w.name)).join(', ')} (menos del 3 % de las ventas). Si ocupan un depósito de la máquina, cámbialos por otro sabor o pruébalos como "novedad" una temporada.`]);
+  }
+  // hours & days
+  const h=T.hours; let bestH=0,bestV=-1;for(let i=6;i<22;i++){const v=h[i]+h[i+1];if(v>bestV){bestV=v;bestH=i}}
+  const wk=T.days.slice(0,5).reduce((a,b)=>a+b,0)/5, we=(T.days[5]+T.days[6])/2;
+  tips.push(['idea',`<b>Tu franja fuerte es de ${bestH}h a ${bestH+2}h</b> (${pct(bestV/T.units)} de las ventas). Ahí es donde hay que estar visible: cartel junto a la máquina, recordatorio del monitor al acabar la clase de esa hora.${we<wk*0.6?` El fin de semana vendes la mitad que entre semana: prueba una promo solo sábado y domingo.`:''}`]);
+  // trend
+  if(res.length===1&&allMonths().length>1){
+    const ms=allMonths(), i=ms.indexOf(months[0]);
+    if(i>0){const prev=calcMonth(ms[i-1]); const ad=activeDays(months[0]); const pAd=activeDays(ms[i-1]);
+      const a=T.units/ad.days, b=prev.units/pAd.days;
+      if(b>0) tips.push([a>=b?'ok':'warn',`<b>Ritmo diario ${a>=b?'al alza':'a la baja'}:</b> ${a.toLocaleString('es-ES',{maximumFractionDigits:1})} batidos/día frente a ${b.toLocaleString('es-ES',{maximumFractionDigits:1})} en ${MONTHS[+ms[i-1].slice(5)-1]}.`]);}
+  }
+  // price sensitivity
+  const extra=0.2/(1+S.settings.iva/100)*(1-S.settings.gym/100);
+  tips.push(['idea',`<b>Subir 20 céntimos</b> todos los batidos te daría unos ${eur(extra*unitsMonth,0)} más al mes con el volumen actual. Ayuda, pero vender 1 batido más al día aporta ${eur(avgC*30,0)}: la prioridad es el volumen.`]);
+  if(T.unmatched) tips.push(['warn',`<b>${T.unmatched} ventas no tienen producto asignado.</b> Asígnalas en "Importar ventas" para que el coste sea real.`]);
+  $('#tips').innerHTML=tips.slice(0,6).map(([c,t])=>`<li class="${c}"><span class="ic">${c==='warn'?'!':c==='ok'?'✓':'→'}</span><div>${t}</div></li>`).join('');
+}
+
+function unitsByProduct(){const t={};monthsInPeriod().forEach(m=>ordersOf([m]).forEach(o=>{const p=matchProduct(o[1]);if(p)t[p.id]=(t[p.id]||0)+1}));return t}
+
+function renderProductos(){
+  const ings=S.catalog.ingredients, sold=unitsByProduct();
+  const ingOpts=sel=>'<option value="">—</option>'+ings.map(i=>`<option value="${i.id}"${i.id===sel?' selected':''}>${esc(i.name)}</option>`).join('');
+  $('#prodTable').innerHTML=`<thead><tr><th>Producto</th><th>Ingrediente 1</th><th class="r">g</th><th>Ingrediente 2</th><th class="r">g</th><th class="r">Otro coste €</th><th class="r">PVP €</th><th class="r">Coste total</th><th class="r">Margen</th><th class="r">Vendidos</th><th></th></tr></thead><tbody>`+
+  S.catalog.products.map(p=>{const e=unitEcon(p);const mp=e.price?e.margin/e.net:0;return `<tr data-id="${p.id}">
+    <td><input type="text" data-f="name" value="${esc(p.name)}" aria-label="Nombre">${(p.aliases||[]).length?'<div>'+p.aliases.map((a,i)=>`<span class="chip">${esc(a)}<button data-alias="${i}" aria-label="Quitar alias">×</button></span>`).join('')+'</div>':''}</td>
+    <td><select data-f="ing1" aria-label="Ingrediente 1">${ingOpts(p.ing1)}</select></td>
+    <td class="r"><input type="number" step="1" min="0" data-f="dose1" value="${p.dose1??''}" aria-label="Dosis 1"></td>
+    <td><select data-f="ing2" aria-label="Ingrediente 2">${ingOpts(p.ing2)}</select></td>
+    <td class="r"><input type="number" step="1" min="0" data-f="dose2" value="${p.dose2??''}" aria-label="Dosis 2"></td>
+    <td class="r"><input type="number" step="0.01" min="0" data-f="extraCost" value="${p.extraCost??''}" aria-label="Otro coste"></td>
+    <td class="r"><input type="number" step="0.05" min="0" data-f="price" value="${p.price??''}" aria-label="Precio"></td>
+    <td class="r">${eur(e.raw+e.pack+e.gym)}</td>
+    <td class="r"><b>${eur(e.margin)}</b> <span class="pill ${mp>=0.6?'good':'bad'}">${pct(mp)}</span></td>
+    <td class="r">${sold[p.id]||0}</td>
+    <td><button class="x" data-del-prod aria-label="Eliminar producto">×</button></td></tr>`}).join('')+'</tbody>';
+  $('#ingTable').innerHTML=`<thead><tr><th>Ingrediente</th><th>Formato</th><th class="r">Precio compra €</th><th class="r">Contenido kg</th><th class="r">€/kg</th><th class="r">€ por 25 g</th><th></th></tr></thead><tbody>`+
+  ings.map(i=>`<tr data-id="${i.id}"><td><input type="text" data-f="name" value="${esc(i.name)}" aria-label="Ingrediente"></td><td><input type="text" data-f="pack" value="${esc(i.pack||'')}" style="min-width:90px" aria-label="Formato"></td>
+   <td class="r"><input type="number" step="0.01" min="0" data-f="price" value="${i.price??''}" aria-label="Precio"></td><td class="r"><input type="number" step="0.05" min="0" data-f="kg" value="${i.kg??''}" aria-label="Kg"></td>
+   <td class="r">${eur(ingPerKg(i))}</td><td class="r">${eur(ingPerKg(i)*0.025)}</td><td><button class="x" data-del-ing aria-label="Eliminar ingrediente">×</button></td></tr>`).join('')+'</tbody>';
+}
+
+function renderCostes(){
+  const s=S.settings;
+  const F=[['iva','IVA de tus ventas (%)','1'],['gym','Comisión del gimnasio (% sobre venta)','0.5'],['waterPrice','Precio del agua (€/litro)','0.001'],['waterPerShake','Agua por batido + limpieza (litros)','0.01'],['cupCost','Coste del vaso (€/ud)','0.01'],['openingCash','Caja inicial (€)','1']];
+  $('#settingsForm').innerHTML=F.map(([k,l,st])=>`<label>${l}<input type="number" step="${st}" data-set="${k}" value="${s[k]??''}"></label>`).join('')+`<p class="muted" style="grid-column:1/-1;margin:0">Agua + vaso por batido: ${eur(packCost(),3)}.</p>`;
+  $('#fixedTable').innerHTML=`<thead><tr><th>Concepto</th><th class="r">€/mes</th><th>Desde</th><th>Hasta</th><th>Cuenta en EBITDA</th><th></th></tr></thead><tbody>`+
+    S.fixed.items.map(f=>`<tr data-id="${f.id}"><td><input type="text" data-f="name" value="${esc(f.name)}" aria-label="Concepto"></td><td class="r"><input type="number" step="0.01" data-f="amount" value="${f.amount}" aria-label="Importe"></td>
+    <td><input type="month" data-f="from" value="${f.from||''}" aria-label="Desde"></td><td><input type="month" data-f="to" value="${f.to||''}" aria-label="Hasta"></td>
+    <td><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-f="ebitda" ${f.ebitda?'checked':''}> ${f.ebitda?'Sí':'No (financiación)'}</label></td><td><button class="x" data-del-fixed aria-label="Eliminar">×</button></td></tr>`).join('')+'</tbody>';
+  const ex=S.expenses.items.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  $('#expTable').innerHTML=ex.length?`<thead><tr><th>Fecha</th><th>Tipo</th><th>Categoría</th><th>Descripción</th><th class="r">Importe</th><th></th></tr></thead><tbody>`+
+    ex.map(e=>`<tr data-id="${e.id}"><td class="num">${esc(e.date)}</td><td><span class="pill ${e.kind==='stock'?'good':'bad'}">${e.kind==='stock'?'Compra de stock':'Gasto operativo'}</span></td><td>${esc(e.category)}</td><td>${esc(e.desc)}</td><td class="r">${eur(+e.amount)}</td><td><button class="x" data-del-exp aria-label="Eliminar gasto">×</button></td></tr>`).join('')+'</tbody>'
+    :'<tbody><tr><td class="muted">Aún no hay gastos. Añade el primero con el formulario de arriba.</td></tr></tbody>';
+}
+
+function unmatchedNames(){
+  const c={}; Object.values(S.sales).forEach(d=>(d.orders||[]).forEach(o=>{if(!matchProduct(o[1]))c[o[1]]=(c[o[1]]||0)+1}));
+  return Object.entries(c).sort((a,b)=>b[1]-a[1]);
+}
+function renderImportar(){
+  const un=unmatchedNames();
+  $('#mapCard').hidden=!un.length;
+  const opts='<option value="">Asignar a…</option>'+S.catalog.products.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
+  $('#mapTable').innerHTML=`<thead><tr><th>Nombre en la máquina</th><th class="r">Ventas</th><th>Producto</th><th></th></tr></thead><tbody>`+
+    un.map(([n,c])=>`<tr data-name="${esc(n)}"><td>${esc(n)}</td><td class="r">${c}</td><td><select data-map aria-label="Asignar producto">${opts}</select></td><td><button class="btn sm ghost" data-newprod>Crear como producto nuevo</button></td></tr>`).join('')+'</tbody>';
+  const ms=Object.keys(S.sales).filter(m=>(S.sales[m].orders||[]).length).sort().reverse();
+  $('#monthsTable').innerHTML=ms.length?`<thead><tr><th>Mes</th><th class="r">Pedidos</th><th class="r">Ventas</th><th>Última venta</th><th></th></tr></thead><tbody>`+
+    ms.map(m=>{const o=S.sales[m].orders;const last=o.map(x=>String(x[3])).sort().pop();return `<tr data-month="${m}"><td>${mLabel(m)}</td><td class="r">${o.length}</td><td class="r">${eur(o.reduce((a,x)=>a+(+x[2]||0),0))}</td><td class="num">${esc(last)}</td><td><button class="x" data-del-month aria-label="Borrar mes">×</button></td></tr>`}).join('')+'</tbody>'
+    :'<tbody><tr><td class="muted">Todavía no has importado ventas.</td></tr></tbody>';
+}
+
+function renderAll(){renderPeriodSelect();renderResumen();renderProductos();renderCostes();renderImportar()}
+
+/* ---------------- events ---------------- */
+document.querySelectorAll('nav.tabs button').forEach(b=>b.addEventListener('click',()=>goTab(b.dataset.tab)));
+function goTab(t){document.querySelectorAll('nav.tabs button').forEach(x=>x.setAttribute('aria-selected',x.dataset.tab===t));document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id==='p-'+t));if(t==='resumen')renderResumen()}
+document.addEventListener('click',e=>{const g=e.target.closest('[data-goto]');if(g)goTab(g.dataset.goto)});
+$('#period').addEventListener('change',e=>{period=e.target.value;renderAll()});
+$('#machine').addEventListener('change',e=>{machine=e.target.value;renderAll()});
+
+// products
+$('#prodTable').addEventListener('change',e=>{
+  const tr=e.target.closest('tr[data-id]'); if(!tr) return; const p=S.catalog.products.find(x=>x.id===tr.dataset.id); const f=e.target.dataset.f; if(!p||!f) return;
+  p[f]=e.target.type==='number'?(e.target.value===''?null:+e.target.value):e.target.value; save('config/catalog'); requestRender();
+});
+$('#prodTable').addEventListener('click',e=>{
+  const tr=e.target.closest('tr[data-id]'); if(!tr) return; const p=S.catalog.products.find(x=>x.id===tr.dataset.id);
+  if(e.target.matches('[data-alias]')){p.aliases.splice(+e.target.dataset.alias,1);save('config/catalog');renderAll()}
+  if(e.target.matches('[data-del-prod]')&&confirm(`¿Eliminar "${p.name}" del catálogo?`)){S.catalog.products=S.catalog.products.filter(x=>x!==p);save('config/catalog');renderAll()}
+});
+$('#addProduct').addEventListener('click',()=>{S.catalog.products.push({id:uid(),name:'Producto nuevo',ing1:'',dose1:25,ing2:'',dose2:null,extraCost:null,price:2.7,aliases:[]});save('config/catalog');renderAll();const ins=$('#prodTable').querySelectorAll('tbody tr:last-child input[data-f=name]');ins[0]&&ins[0].select()});
+// ingredients
+$('#ingTable').addEventListener('change',e=>{const tr=e.target.closest('tr[data-id]');const i=S.catalog.ingredients.find(x=>x.id===tr.dataset.id);const f=e.target.dataset.f;i[f]=e.target.type==='number'?+e.target.value:e.target.value;save('config/catalog');requestRender()});
+$('#ingTable').addEventListener('click',e=>{if(!e.target.matches('[data-del-ing]'))return;const id=e.target.closest('tr').dataset.id;if(S.catalog.products.some(p=>p.ing1===id||p.ing2===id)){toast('Ese ingrediente lo usa algún producto: cámbialo antes de borrarlo');return}S.catalog.ingredients=S.catalog.ingredients.filter(x=>x.id!==id);save('config/catalog');renderAll()});
+$('#addIng').addEventListener('click',()=>{S.catalog.ingredients.push({id:uid(),name:'Ingrediente nuevo',pack:'',price:0,kg:1});save('config/catalog');renderAll()});
+// settings
+$('#settingsForm').addEventListener('change',e=>{const k=e.target.dataset.set;if(!k)return;S.settings[k]=+e.target.value;save('config/settings');requestRender()});
+// fixed
+$('#fixedTable').addEventListener('change',e=>{const tr=e.target.closest('tr[data-id]');const f=S.fixed.items.find(x=>x.id===tr.dataset.id);const k=e.target.dataset.f;f[k]=e.target.type==='checkbox'?e.target.checked:e.target.type==='number'?+e.target.value:e.target.value;save('config/fixed');requestRender()});
+$('#fixedTable').addEventListener('click',e=>{if(!e.target.matches('[data-del-fixed]'))return;const id=e.target.closest('tr').dataset.id;S.fixed.items=S.fixed.items.filter(x=>x.id!==id);save('config/fixed');renderAll()});
+$('#addFixed').addEventListener('click',()=>{const d=new Date();S.fixed.items.push({id:uid(),name:'Nuevo coste fijo',amount:0,from:d.toISOString().slice(0,7),to:'',ebitda:true});save('config/fixed');renderAll()});
+// expenses
+$('#exDate').value=new Date().toISOString().slice(0,10);
+$('#addExpense').addEventListener('click',()=>{
+  const amt=parseFloat($('#exAmt').value); if(!$('#exDate').value||!(amt>0)){toast('Pon una fecha y un importe');return}
+  S.expenses.items.push({id:uid(),date:$('#exDate').value,kind:$('#exKind').value,category:$('#exCat').value||($('#exKind').value==='stock'?'Materia prima':'Otros'),desc:$('#exDesc').value,amount:amt});
+  save('ledger/expenses'); $('#exAmt').value='';$('#exDesc').value=''; toast('Gasto guardado'); renderAll();
+});
+$('#expTable').addEventListener('click',e=>{if(!e.target.matches('[data-del-exp]'))return;const id=e.target.closest('tr').dataset.id;S.expenses.items=S.expenses.items.filter(x=>x.id!==id);save('ledger/expenses');renderAll()});
+// mapping
+$('#mapTable').addEventListener('change',e=>{if(!e.target.matches('[data-map]')||!e.target.value)return;const n=e.target.closest('tr').dataset.name;const p=S.catalog.products.find(x=>x.id===e.target.value);(p.aliases=p.aliases||[]).push(n);save('config/catalog');toast('Asignado a '+p.name);renderAll()});
+$('#mapTable').addEventListener('click',e=>{if(!e.target.matches('[data-newprod]'))return;const n=e.target.closest('tr').dataset.name;
+  const prices=[];Object.values(S.sales).forEach(d=>d.orders.forEach(o=>{if(o[1]===n)prices.push(+o[2])}));
+  S.catalog.products.push({id:uid(),name:n,ing1:'',dose1:25,ing2:'',dose2:null,extraCost:null,price:prices[0]||2.7,aliases:[n]});save('config/catalog');toast('Producto creado: completa sus ingredientes');renderAll();goTab('productos')});
+$('#monthsTable').addEventListener('click',e=>{if(!e.target.matches('[data-del-month]'))return;const m=e.target.closest('tr').dataset.month;if(!confirm(`¿Borrar las ventas de ${mLabel(m)}? Podrás volver a importarlas.`))return;delete S.sales[m];delDoc('sales/'+m);renderAll()});
+
+/* ---------------- import ---------------- */
+const drop=$('#drop');
+['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over')}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over')}));
+drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)importFile(f)});
+$('#fileIn').addEventListener('change',e=>{const f=e.target.files[0];if(f)importFile(f);e.target.value=''});
+
+function fmtTime(v){
+  if(v instanceof Date) return v.toISOString().slice(0,19).replace('T',' ');
+  if(typeof v==='number'){const d=XLSX.SSF.parse_date_code(v);const p=n=>String(n).padStart(2,'0');return `${d.y}-${p(d.m)}-${p(d.d)} ${p(d.H)}:${p(d.M)}:${p(Math.floor(d.S))}`}
+  let s=String(v||'').trim();
+  const m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})(.*)$/); if(m) s=`${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}${m[4]}`;
+  return s;
+}
+async function importFile(file){
+  const out=$('#importResult');
+  if(typeof XLSX==='undefined'){out.innerHTML='<div class="banner">No se pudo cargar el lector de Excel. Revisa tu conexión y recarga la página.</div>';return}
+  try{
+    const wb=XLSX.read(await file.arrayBuffer(),{type:'array',cellDates:true});
+    let rows=null,hi=-1;
+    for(const name of wb.SheetNames){const r=XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,raw:true,defval:''});const i=r.findIndex(row=>row.some(c=>norm(c)==='order number'));if(i>=0){rows=r;hi=i;break}}
+    if(!rows) throw new Error('No encuentro la columna "Order Number". ¿Es el export de ventas de la máquina?');
+    const H=rows[hi].map(norm), col=n=>H.indexOf(n);
+    const c={no:col('order number'),name:col('goods name'),amt:col('payment amount'),st:col('order status'),t:col('order time'),mach:col('machine name')};
+    if(c.name<0||c.amt<0||c.t<0) throw new Error('Faltan columnas (Goods Name, Payment Amount u Order Time).');
+    const byM={}; let skipped=0;
+    rows.slice(hi+1).forEach(r=>{
+      if(!r[c.no]) return;
+      if(c.st>=0&&r[c.st]&&norm(r[c.st])!=='complete'){skipped++;return}
+      const t=fmtTime(r[c.t]); const m=t.slice(0,7); if(!/^\d{4}-\d{2}$/.test(m)) return;
+      const amt=typeof r[c.amt]==='number'?r[c.amt]:parseFloat(String(r[c.amt]).replace(',','.'))||0;
+      (byM[m]=byM[m]||[]).push([String(r[c.no]),String(r[c.name]).trim(),amt,t,c.mach>=0?String(r[c.mach]):'']);
+    });
+    let added=0,dup=0; const touched=[];
+    for(const m of Object.keys(byM).sort()){
+      const doc=S.sales[m]||(S.sales[m]={month:m,orders:[]}); const seen=new Set(doc.orders.map(o=>o[0]));
+      let a=0; byM[m].forEach(o=>{if(seen.has(o[0]))dup++;else{doc.orders.push(o);seen.add(o[0]);a++}});
+      if(a){added+=a;touched.push(m);doc.orders.sort((x,y)=>String(y[3]).localeCompare(String(x[3])));await save('sales/'+m)}
+    }
+    const un=unmatchedNames().length;
+    out.innerHTML=`<div class="card"><h3>${added?`${added} ventas nuevas importadas`:'No había ventas nuevas'}</h3><p class="muted">${touched.length?'Meses actualizados: '+touched.map(mLabel).join(', ')+'. ':''}${dup?dup+' pedidos ya estaban y no se han duplicado. ':''}${skipped?skipped+' pedidos no completados se han ignorado. ':''}${un?`<b>Hay ${un} nombre(s) sin asignar abajo.</b>`:''}</p></div>`;
+    if(touched.length){period=touched[touched.length-1]}
+    renderAll(); toast(added?'Ventas importadas':'Sin cambios');
+  }catch(err){out.innerHTML=`<div class="banner"><span>${esc(err.message||err)}</span></div>`}
+}
+
+/* ---------------- boot ---------------- */
+function applyDoc(key,snap){
+  if(!snap.exists) return; const d=snap.data();
+  if(key==='settings') S.settings=Object.assign({},S.settings,d);
+  if(key==='catalog') S.catalog={ingredients:(d.ingredients||[]).map(x=>({...x})),products:(d.products||[]).map(x=>({...x,aliases:[...(x.aliases||[])]}))};
+  if(key==='fixed') S.fixed={items:(d.items||[]).map(x=>({...x}))};
+  if(key==='expenses') S.expenses={items:(d.items||[]).map(x=>({...x}))};
+}
+renderAll();
+(async()=>{
+  try{ db = window.claude&&window.claude.use ? await window.claude.use('db') : null }catch(e){db=null}
+  if(!db){
+    try{const saved=JSON.parse(localStorage.getItem(LS)||'null');if(saved)Object.assign(S,saved)}catch(e){}
+    $('#sync').textContent='Guardado en este navegador'; renderAll(); return;
+  }
+  $('#sync').textContent='Sincronizado';
+  const map={'config/settings':'settings','config/catalog':'catalog','config/fixed':'fixed','ledger/expenses':'expenses'};
+  Object.entries(map).forEach(([p,k])=>db.doc(p).onSnapshot(s=>{if(s.metadata.hasPendingWrites)return;applyDoc(k,s);requestRender()},e=>{$('#sync').textContent='Sin conexión con los datos'}));
+  db.collection('sales').onSnapshot(q=>{
+    if(q.metadata.hasPendingWrites) return;
+    const next={}; q.docs.forEach(d=>{const b=d.data();next[d.id]={month:d.id,orders:(b.orders||[]).map(o=>[...o])}});
+    S.sales=next; requestRender();
+  },e=>{$('#sync').textContent='Sin conexión con las ventas'});
+})();
+})();
+</script>
+</body>
+</html>
